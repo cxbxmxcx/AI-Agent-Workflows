@@ -1,0 +1,7 @@
+openai-agents  # Provides tools for building and running OpenAI-based agents
+python-dotenv  # Loads environment variables from a .env file
+autopep8  # Automatically formats Python code to conform to PEP 8
+pylint  # Linter for Python code to enforce coding standards
+flake8  # Combines linting tools for style guide enforcement
+isort  # Automatically sorts Python imports
+mypy  # Static type checker for Python
