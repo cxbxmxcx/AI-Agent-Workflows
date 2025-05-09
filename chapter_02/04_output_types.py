@@ -1,5 +1,7 @@
+
 from agents import Agent, Runner
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 # Load environment variables from .env file
 load_dotenv()
@@ -14,11 +16,15 @@ You are a research planning assistant.
 - Output 5 concise tasks (5 words or less) to your plan.
 """
 
+class ResearchPlanModel(BaseModel):
+    tasks: dict[int, str]
+    """A list of tasks to perform for research."""
 
-
+    
 agent = Agent(
     name="Research Planner", 
     instructions=instructions,
+    output_type=ResearchPlanModel,
     )
 
 input = "learn about AI agents"
