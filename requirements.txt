@@ -6,3 +6,5 @@ pylint  # Linter for Python code to enforce coding standards
 flake8  # Combines linting tools for style guide enforcement
 isort  # Automatically sorts Python imports
 mypy  # Static type checker for Python
+mcp[cli]
+uv # for project management and running application servers for Claude etc.

@@ -1,4 +1,4 @@
-# Build a Deep Research Agent from Scratch
+# AI Agents In Action (2nd Edition)
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![OpenAI](https://img.shields.io/badge/OpenAI-API-blue)](https://platform.openai.com/) [![MCP](https://img.shields.io/badge/Protocol-MCP-orange)](https://platform.openai.com/docs/guides/mcp)
 
@@ -17,7 +17,7 @@ cd AI-Agent-Workflows
 
 ### 2. Create Your Environment
 
-This project requires **Python 3.10+**. Create and activate a Python virtual environment:
+This project requires **Python 3.11+**. Create and activate a Python virtual environment:
 
 #### On Windows:
 
