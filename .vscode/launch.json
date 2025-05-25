@@ -8,7 +8,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "preLaunchTask": "Install requirements",
-            "justMyCode": false,
+            "justMyCode": true,
         }
     ]
 }

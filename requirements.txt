@@ -8,3 +8,4 @@ isort  # Automatically sorts Python imports
 mypy  # Static type checker for Python
 mcp[cli]
 uv # for project management and running application servers for Claude etc.
+openai-agents[viz]  # Visualization tools for OpenAI agents
