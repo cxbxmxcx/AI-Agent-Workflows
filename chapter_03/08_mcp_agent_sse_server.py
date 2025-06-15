@@ -1,10 +1,7 @@
 import asyncio
-from pathlib import Path
 
 from agents import Agent, Runner
 from agents.mcp import MCPServerSse
-
-SCRIPT = Path(__file__).with_name("07_mcp_agent_hosted_server.py").resolve()
 
 
 async def main():
