@@ -4,7 +4,7 @@
         {
             "label": "Install requirements",
             "type": "shell",
-            "command": "${command:python.interpreterPath} -m pip install -r requirements.txt",
+            "command": "${command:python.interpreterPath} -m pip install --upgrade --upgrade-strategy eager -r requirements.txt",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
