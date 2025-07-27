@@ -14,18 +14,16 @@ You are a research planning assistant.
 - Output 5 concise tasks (5 words or less) to your plan.
 """
 
-
-
 agent = Agent(
-    name="Research Planner", 
+    name="Research Planner",
     instructions=instructions,
-    )
+)
 
 input = "learn about AI agents"
 
 result = Runner.run_sync(
-    agent, 
+    agent,
     input=input,
-    )
+)
 
 print(result.final_output)
