@@ -29,6 +29,7 @@ agent = Agent(
     instructions="""
 You are a retrieval‑augmented answering agent.
 Always call 'search_knowledge' first 
+break your query into smaller parts if needed
 to fetch relevant context for the user's query.
 Respond using the retrieved context in your answer.
 """,

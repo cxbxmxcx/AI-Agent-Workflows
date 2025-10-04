@@ -7,7 +7,7 @@ cot_agent = Agent(
     name="TimeTravelerCoT",
     instructions=(
         "You are a time travel problem solver. "
-        "Work out the solution step by step, then give the final answer."
+        # "Work out the solution step by step, then give the final answer."
     ),
 )
 

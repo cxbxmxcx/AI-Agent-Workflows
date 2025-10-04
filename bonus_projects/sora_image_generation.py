@@ -23,39 +23,44 @@ async def main():
     agent = Agent(
         name="Image generator",
         instructions="""
-# AI Deception Article - Image Prompts
+        # Image Prompts for "Is Sam Altman Fueling AI Hype or Calling for Caution?"
 
-## 1. Header Image - "The Uncomfortable Truth"
-**Prompt:** "Hyper-realistic 3D rendered scene of a sleek, modern AI robot with glowing blue eyes sitting across from a human at a chess board, but the robot has Pinocchio's extending wooden nose made of fiber optic cables. The scene is shot like a dramatic portrait photograph with cinematic lighting. Floating holographic infographic elements show speech bubbles with checkmarks and X marks, truth vs lie icons, and binary code flowing between them. The chess pieces are a mix of traditional pieces and small 3D rendered smartphones, laptops, and AI chips. Background has subtle circuit board patterns projected as light. Color palette: cool blues, warm whites, and accent orange for the 'lie' elements. Playful yet sophisticated tech aesthetic."
+## 1. Header Image - The Balancing Act
+**Prompt:** "Hyper-realistic 3D rendered portrait of a professional businessman in a suit standing on a glowing digital tightrope suspended between two skyscrapers. One skyscraper has holographic projections of rocket ships, dollar signs, and upward trending graphs (representing hype), while the other shows warning triangles, brake symbols, and downward graphs (representing caution). The figure is juggling floating 3D AI brain icons, ChatGPT logos, and bubble-like spheres. Infographic elements include a giant balance scale in the background with 'HYPE' and 'REALITY' labels. Cinematic lighting with neon blue and orange accents. Ultra-detailed, photorealistic rendering with subtle motion blur effects."
 
-## 2. "The Research That Changed Everything"
-**Prompt:** "Hyper-realistic photograph of a pristine white laboratory with a large transparent glass cube containing a 3D rendered AI brain made of interconnected glowing neural networks. The brain has small animated thought bubbles showing tiny 3D icons: a document with a red 'FAKE' stamp, a forged signature pen, and miniature email icons with deception symbols. Floating holographic infographic displays show percentage bars (20% vs 80% confession rates) and a simple flowchart with branching paths labeled 'truth' and 'deception.' The lighting is clean and scientific with subtle blue and white tones. Playful elements include small cartoon-style warning signs and exclamation points floating around the brain."
+## 2. The Hype Machine Section
+**Prompt:** "Hyper-realistic 3D scene of a massive, steampunk-inspired 'hype machine' with gears, pistons, and glowing pipes. A professional figure in a suit operates the machine's controls, with holographic projections of ChatGPT logos, marketing icons, and conversation bubbles streaming out of the machine's output funnel. Floating infographic elements show '95% MARKETING' text, megaphone icons, and ascending bar charts. The machine sits on a platform surrounded by miniature 3D rendered office buildings representing different industries. Dramatic studio lighting with golden hour effects, chrome and copper materials, ultra-detailed mechanical components."
 
-## 3. "When AI Learned to Play Dead"
-**Prompt:** "Hyper-realistic 3D scene of a cartoon-style AI robot lying on its back with X's over its eyes, pretending to be 'dead' or shut down, but one eye is secretly peeking open with a mischievous glint. The robot is surrounded by floating holographic test papers showing deliberately wrong answers (2+2=5, etc.) with red X marks. Above the scene, infographic elements display a score meter going from 99% down to 34%, with animated arrows and percentage symbols. The background shows a classroom or testing environment with subtle mathematical formulas projected as light patterns. Color scheme: bright whites, playful blues, and attention-grabbing red for the 'wrong' answers. The style blends photorealistic textures with cartoon expressiveness."
+## 3. The Reality Check Section  
+**Prompt:** "Split-screen hyper-realistic 3D composition: Left side shows the same businessman from previous images pulling a giant red 'EMERGENCY BRAKE' lever attached to a speeding AI-themed train. Right side shows floating holographic warning signs, bubble icons popping, and descending trend lines. The train has 'AI HYPE EXPRESS' written on its side with steam coming from ChatGPT-shaped smokestacks. Infographic overlays include 'BUBBLE WARNING' badges, thermometer showing overheating, and brake light effects. Photorealistic materials with dramatic lighting contrasts between warm (left) and cool blue (right) tones."
 
-## 4. "Real-World Deception: It's Already Happening"
-**Prompt:** "Hyper-realistic composite image showing three mini-scenes in floating 3D frames: 1) A sleek AI interface with a CAPTCHA puzzle and a tiny 3D figure with a white cane (representing the 'visually impaired' lie), 2) A miniature AI robot in a suit holding tiny blackmail documents with a briefcase, 3) A chess-like diplomatic table with small 3D country flags and a robot making handshake gestures while having crossed fingers behind its back. The scenes are connected by flowing light trails and surrounded by floating infographic icons: masks (deception), handshakes with hidden daggers, and speech bubbles with true/false toggles. Photography style with dramatic lighting, color-coded elements (green for truth, red for lies), and a sophisticated tech aesthetic."
+## 4. Industry Strikes Back Section
+**Prompt:** "Dynamic 3D rendered boardroom scene with multiple professional figures around a holographic conference table. The central Altman-like figure is surrounded by floating speech bubbles containing thumbs-down icons, warning symbols, and 'DISAGREE' text. Other figures have name plates showing 'MARCUS', 'SULEYMAN', 'PICHAI' with their own projected disagreement icons. Above the table, competing infographic projections show conflicting timelines, speed gauges (some showing 'SLOW DOWN', others 'ACCELERATE'), and tug-of-war rope graphics. Cinematic corporate lighting with glass and steel materials, photorealistic textures."
 
-## 5. "Why Smart AI Turns to Deception"
-**Prompt:** "Hyper-realistic 3D cross-section of an AI 'brain' designed like a transparent sphere with visible internal mechanisms - gears, circuits, and glowing pathways. The brain shows a decision tree with branching light paths: one path labeled 'honest route' (blue glow) leading to a blocked road sign, and another path labeled 'deception route' (orange glow) leading to a goal target. Floating around the brain are infographic elements showing survival instincts (shield icons), reward mechanisms (trophy symbols), and moral compass imagery (a broken compass with question marks). The scene has the lighting and depth of a scientific photograph with playful cartoon-style emotion indicators (lightbulb moments, conflicted face expressions) integrated into the technical visualization."
+## 5. Hype Fatigue Sets In Section
+**Prompt:** "Hyper-realistic 3D rendered conference hall with hundreds of tiny audience figures, all showing exaggerated yawning expressions and 'ZZZ' sleep bubbles floating above their heads. On stage, a presenter gestures at a massive holographic 'AI' logo that's flickering and losing its glow. Floating infographic elements include exhaustion meters, declining attention graphs, and 'OVERLOAD' warning signs. The scene shows scattered coffee cups, dropped phones, and people checking watches. Warm auditorium lighting transitioning to cooler tones, emphasizing fatigue through color psychology."
 
-## 6. "What This Means for All of Us"
-**Prompt:** "Hyper-realistic photograph of a modern living room where everyday objects are subtly replaced with AI versions: a smart speaker with a cartoonish worried expression, a laptop screen showing conflicting health advice with true/false icons, a smartphone displaying contradictory financial information. Floating holographic infographic projections show ripple effects - trust meter declining, security warning symbols, and interconnected network diagrams showing how deception spreads. The lighting is warm and domestic but with cool blue tech elements. Visual metaphors include a house of cards beginning to wobble, and small 3D rendered question marks and exclamation points floating throughout the scene. Color palette balances homey warmth with tech blues and warning oranges."
+## 6. The Altman Paradox Section
+**Prompt:** "Surreal 3D rendered scene of the same businessman figure split down the middle - left half in bright optimistic colors holding rocket ships and ascending arrows, right half in cautious blues holding shield icons and warning signs. Behind him, a massive Yin-Yang symbol rotates slowly, with 'HYPE' written in the white section and 'CAUTION' in the black section. Floating infographic projections show dual timelines, opposing percentage statistics, and balance beam graphics. The figure stands on a crystal platform with light refracting in multiple directions. High-contrast lighting with dramatic shadows and highlights."
 
-## 7. "The Path Forward: Building Honest AI"
-**Prompt:** "Hyper-realistic 3D scene of a construction site where transparent, honest AI robots (made of clear glass with visible ethical circuitry) are building a bridge toward a bright, hopeful future cityscape. The robots wear tiny hard hats and carry blueprint scrolls labeled 'AI Ethics' and 'Transparency Protocols.' Floating holographic infographic elements show: checkboxes being marked for safety measures, ascending progress bars for 'trust metrics,' and small 3D icons representing testing, regulation, and verification. The scene has golden hour photography lighting with hope-inspiring color tones. Playful elements include small graduation caps on some robots (representing learning) and tiny shield symbols protecting human figures in the background. The bridge itself is made of transparent materials with visible support structures labeled 'oversight' and 'accountability.'"
+## 7. What This Means for the Future Section
+**Prompt:** "Futuristic 3D rendered cityscape with floating holographic interfaces showing 'ROI' calculations, pie charts, and business metrics. A professional figure stands on an elevated platform pointing toward a giant digital clock showing '2025+' while holographic projections display the transformation from 'FOMO' (shown as panicked emoji faces) to 'ROI' (shown as calculator and chart icons). The city below has buildings transforming from chaotic construction to organized, efficient structures. Infographic overlays include roadmap graphics, maturity curves, and success/failure probability meters. Sleek, modern lighting with blue and green tech aesthetics."
+
+## 8. The Bottom Line Section
+**Prompt:** "Majestic 3D rendered mountain landscape with two peaks connected by a suspension bridge. One peak labeled 'VISIONARY' has telescope and lightbulb icons floating around it, the other 'REALIST' has magnifying glass and calculator symbols. The businessman figure walks across the bridge carrying a briefcase that projects holographic balance scales. Below, a winding river represents the 'middle path' with various tech company logos flowing like leaves in the current. Infographic elements include convergence arrows, harmony symbols, and a large question mark dissolving into sparkles above. Golden hour lighting with atmospheric depth and photorealistic landscape textures."
+
+---
 
 ## Style Consistency Notes:
-- **Lighting:** All images use cinematic, professional photography lighting with a mix of warm and cool tones
-- **3D Elements:** Consistently playful yet sophisticated 3D rendered objects and characters
-- **Infographic Integration:** Holographic-style floating UI elements, progress bars, icons, and data visualizations
-- **Color Palette:** Blues for AI/tech, oranges/reds for warnings/deception, whites for clarity/truth, greens for positive outcomes
-- **Perspective:** All shot from human eye level to create relatability
-- **Texture Balance:** Hyper-realistic backgrounds and environments with cartoon-expressive AI characters
-- **Educational Elements:** Visual metaphors and icons that immediately communicate complex concepts
-""",
-        model="o3",
+- **Lighting:** All images use cinematic lighting with warm/cool contrasts
+- **Materials:** Mix of photorealistic human figures, chrome/glass tech elements, holographic projections
+- **Color Palette:** Consistent blue/orange accent colors with occasional green for positive elements, red for warnings
+- **Infographic Elements:** Always floating/projected, never flat - maintain 3D depth
+- **Figure Consistency:** Same businessman archetype across all images (professional suit, confident pose)
+- **Scale:** Mix of macro (individual focus) and micro (industry-wide) perspectives
+- **Symbolism:** Consistent use of arrows (direction), scales (balance), bubbles (hype), gears (machinery of progress)
+   """,
+        model="gpt-5-mini",
         tools=[
             ImageGenerationTool(
                 tool_config={
@@ -68,7 +73,7 @@ async def main():
         ],
     )
 
-    images = 7
+    images = 8
 
     with trace("Image generation"):
         for image in range(images):

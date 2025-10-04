@@ -20,3 +20,12 @@ google-adk[a2a]
 litellm
 
 matplotlib  # For plotting and visualizing data
+
+# For tracing, monitoring, and evaluation
+arize-phoenix
+openinference-instrumentation-openai-agents
+openinference-instrumentation-openai
+
+# For web applications and APIs
+fastapi 
+uvicorn[standard]
