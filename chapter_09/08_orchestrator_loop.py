@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 from agents import Agent, Runner
 from agents.mcp import MCPServerStdio
 
+SEARCH_PROVIDER = os.environ.get("SEARCH_PROVIDER", "brave").lower()
+
 
 # --- Shared types (from earlier examples) ---
 
@@ -186,14 +188,24 @@ Always provide reasoning for your decision.
 async def run_orchestrator_loop(
     goal: str, max_iterations: int = 15
 ) -> ResearchState:
-    search_server = MCPServerStdio(
-        name="Brave Search",
-        params={
-            "command": "npx",
-            "args": ["-y", "@anthropic/brave-search-mcp"],
-            "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
-        },
-    )
+    if SEARCH_PROVIDER == "tavily":
+        search_server = MCPServerStdio(
+            name="Tavily Search",
+            params={
+                "command": "npx",
+                "args": ["-y", "@tavily-ai/tavily-mcp"],
+                "env": {"TAVILY_API_KEY": os.environ["TAVILY_API_KEY"]},
+            },
+        )
+    else:
+        search_server = MCPServerStdio(
+            name="Brave Search",
+            params={
+                "command": "npx",
+                "args": ["-y", "@anthropic/brave-search-mcp"],
+                "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
+            },
+        )
     async with search_server:
         workers = {
             "Research Worker": research_worker.clone(
