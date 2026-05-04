@@ -235,6 +235,23 @@ search_server = MCPServerStdio(
     },
 )
 
+tavily_search_server = MCPServerStdio(
+    name="Tavily Search",
+    params={
+        "command": "npx",
+        "args": ["-y", "@tavily-ai/tavily-mcp"],
+        "env": {
+            **os.environ,
+            "TAVILY_API_KEY": os.environ.get("TAVILY_API_KEY", ""),
+        },
+    },
+)
+
+SEARCH_PROVIDER = os.environ.get("SEARCH_PROVIDER", "brave").lower()
+active_search_server = (
+    tavily_search_server if SEARCH_PROVIDER == "tavily" else search_server
+)
+
 
 # ============================================================
 # AGENTS (Listings 10.2-10.5, 10.7)
@@ -308,7 +325,7 @@ execution_agent = Agent(
     Be honest about quality. A retrieval that returns metadata
     instead of content should get a low relevance_score and a
     quality_note explaining why.""",
-    mcp_servers=[search_server],
+    mcp_servers=[active_search_server],
     output_type=Finding,
 )
 
@@ -650,7 +667,7 @@ async def run_cognitive_loop(
     """
     workspace = CognitiveWorkspace(raw_query=query)
 
-    async with memory_server, search_server:
+    async with memory_server, active_search_server:
         for i in range(max_iterations):
             workspace.iteration_count = i
             print(f"\n{'─'*40}")
