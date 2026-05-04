@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 from agents import Agent, Runner
 from agents.mcp import MCPServerStdio
 
+SEARCH_PROVIDER = os.environ.get("SEARCH_PROVIDER", "brave").lower()
+
 
 # --- Collaboration types ---
 
@@ -106,14 +108,24 @@ async def run_collaboration_loop(
 ) -> CollaborationState:
     agents = [researcher_agent, critic_agent,
               synthesizer_agent]
-    search_server = MCPServerStdio(
-        name="Brave Search",
-        params={
-            "command": "npx",
-            "args": ["-y", "@anthropic/brave-search-mcp"],
-            "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
-        },
-    )
+    if SEARCH_PROVIDER == "tavily":
+        search_server = MCPServerStdio(
+            name="Tavily Search",
+            params={
+                "command": "npx",
+                "args": ["-y", "@tavily-ai/tavily-mcp"],
+                "env": {"TAVILY_API_KEY": os.environ["TAVILY_API_KEY"]},
+            },
+        )
+    else:
+        search_server = MCPServerStdio(
+            name="Brave Search",
+            params={
+                "command": "npx",
+                "args": ["-y", "@anthropic/brave-search-mcp"],
+                "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
+            },
+        )
     async with search_server:
         agents[0] = researcher_agent.clone(
             mcp_servers=[search_server]
