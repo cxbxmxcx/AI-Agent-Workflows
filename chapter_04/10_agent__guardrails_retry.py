@@ -121,21 +121,26 @@ Produce a research plan to find the book 'The Hitchhiker's Guide to the Galaxy'
         research_agent.mcp_servers = [research_srv]
         result = await Runner.run(research_agent, goal)
         thinking_agent.mcp_servers = [thinking_srv]
-        final_output = result.final_output
+        final_output = str(result.final_output)
+        current_input = goal + " " + final_output
+
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                result = await Runner.run(thinking_agent, final_output)
+                result = await Runner.run(thinking_agent, current_input)
                 final_output = result.final_output.research_plan
                 break
             except OutputGuardrailTripwireTriggered as output_tripped:
-                final_output = output_tripped.guardrail_result.output.output_info
+                final_output = str(output_tripped.guardrail_result.output.output_info)
             if attempt == max_retries - 1:
                 final_output = "A research plan was not generated. Please try again with a different goal."
+                return
         filesystem_agent.mcp_servers = [fs_srv]
-        result = await Runner.run(filesystem_agent, final_output)
+        result = await Runner.run(filesystem_agent, current_input + " " + final_output)
         print(result.final_output)
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
