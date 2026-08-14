@@ -2,7 +2,9 @@
 
 import os
 
-from agents import Agent, Runner, trace
+from agents import Agent, Runner, set_default_openai_client, set_default_openai_api, trace
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
 
 os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "http://localhost:6006"
 
@@ -15,6 +17,15 @@ from openinference.instrumentation import (
 # pip install openinference-instrumentation arize-phoenix-otel
 from phoenix.otel import register
 
+load_dotenv()
+
+client = AsyncOpenAI(
+    base_url=os.getenv("NRP_BASE_URL"),
+    api_key=os.getenv("NRP_API_KEY"),
+)
+set_default_openai_client(client, use_for_tracing=False)
+set_default_openai_api("chat_completions")
+
 set_trace_processors([])  # Disable default trace processors
 # configure the Phoenix tracer
 tracer_provider = register(
@@ -22,7 +33,7 @@ tracer_provider = register(
     auto_instrument=True,  # Auto-instrument your app based on installed dependencies
 )
 
-model = "gpt-5-mini"
+model = "gpt-oss"
 agent = Agent(name="Assistant", instructions="Always answer in a Haiku", model=model)
 
 

@@ -12,6 +12,7 @@ async def create_search_server() -> MCPServerStdio:
             "args": ["-y", "@anthropic/brave-search-mcp"],
             "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
         },
+        client_session_timeout_seconds=90,
     )
     await server.connect()
     return server

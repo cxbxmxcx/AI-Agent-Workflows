@@ -1,8 +1,62 @@
 from typing import Literal
 
-from agents import Agent, Runner
+import os
+import sys
+
+sys.stdout.reconfigure(encoding="utf-8")
+
+from agents import (
+    Agent,
+    Runner,
+    set_default_openai_client,
+    set_default_openai_api,
+    set_trace_processors,
+)
 from agents.mcp import MCPServerStdio
+from agents.tracing import TracingProcessor
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
 from pydantic import BaseModel
+
+load_dotenv()
+
+client = AsyncOpenAI(
+    base_url=os.getenv("NRP_BASE_URL"),
+    api_key=os.getenv("NRP_API_KEY"),
+)
+set_default_openai_client(client, use_for_tracing=False)
+set_default_openai_api("chat_completions")
+
+
+class ConsoleTracingProcessor(TracingProcessor):
+    """Prints trace/span utilization (tokens, duration) to the console."""
+
+    def on_trace_start(self, trace):
+        print(f"\n[trace] '{trace.name}' started")
+
+    def on_trace_end(self, trace):
+        print(f"[trace] '{trace.name}' finished")
+
+    def on_span_start(self, span):
+        pass
+
+    def on_span_end(self, span):
+        data = span.span_data.export()
+        summary = f"  [span] {data.get('type', 'unknown')}"
+        if data.get("name"):
+            summary += f" - {data['name']}"
+        if data.get("usage"):
+            summary += f" | usage={data['usage']}"
+        print(summary)
+
+    def shutdown(self):
+        pass
+
+    def force_flush(self):
+        pass
+
+
+set_trace_processors([ConsoleTracingProcessor()])
 
 MAX_TURNS = 3  # iteration cap
 
@@ -12,6 +66,7 @@ thinking_srv = MCPServerStdio(
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
     },
+    client_session_timeout_seconds=90,
 )
 
 
@@ -44,6 +99,7 @@ async def main():
         instructions=instructions,
         mcp_servers=[thinking_srv],
         output_type=Answer,
+        model="gpt-oss",
     )
 
     async with thinking_srv:

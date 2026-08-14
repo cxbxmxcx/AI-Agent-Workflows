@@ -1,13 +1,64 @@
+import os
+import sys
 import uuid
 from pathlib import Path
 
+sys.stdout.reconfigure(encoding="utf-8")
+
 import chromadb
 import tiktoken
-from agents import Agent, Runner, function_tool  # OpenAI Agents SDK
+from agents import (
+    Agent,
+    Runner,
+    function_tool,
+    set_default_openai_client,
+    set_default_openai_api,
+    set_trace_processors,
+)  # OpenAI Agents SDK
+from agents.tracing import TracingProcessor
 from dotenv import load_dotenv
+from openai import AsyncOpenAI
 
 # Load environment variables from .env file
 load_dotenv()
+
+client = AsyncOpenAI(
+    base_url=os.getenv("NRP_BASE_URL"),
+    api_key=os.getenv("NRP_API_KEY"),
+)
+set_default_openai_client(client, use_for_tracing=False)
+set_default_openai_api("chat_completions")
+
+
+class ConsoleTracingProcessor(TracingProcessor):
+    """Prints trace/span utilization (tokens, duration) to the console."""
+
+    def on_trace_start(self, trace):
+        print(f"\n[trace] '{trace.name}' started")
+
+    def on_trace_end(self, trace):
+        print(f"[trace] '{trace.name}' finished")
+
+    def on_span_start(self, span):
+        pass
+
+    def on_span_end(self, span):
+        data = span.span_data.export()
+        summary = f"  [span] {data.get('type', 'unknown')}"
+        if data.get("name"):
+            summary += f" - {data['name']}"
+        if data.get("usage"):
+            summary += f" | usage={data['usage']}"
+        print(summary)
+
+    def shutdown(self):
+        pass
+
+    def force_flush(self):
+        pass
+
+
+set_trace_processors([ConsoleTracingProcessor()])
 
 # ------------------------------------------------------------------
 # 1. Load + chunk the script
@@ -34,7 +85,8 @@ def simple_chunk(text, max_tokens=200):
 docs = simple_chunk(script_text, max_tokens=200)
 
 # ------------------------------------------------------------------
-# 2. Create (or connect to) a Chroma collection with OpenAI embeddings
+# 2. Create (or connect to) a Chroma collection (uses Chroma's bundled
+#    local embedding function, not an external embeddings API)
 # ------------------------------------------------------------------
 client = chromadb.PersistentClient(
     path="./chapter_06/chroma_script_store"  # on-disk so we reuse later
@@ -124,6 +176,7 @@ def search_script_with_keyword(query: str, top_k: int = 3) -> str:
 # ------------------------------------------------------------------
 agent = Agent(
     name="Script Agent",
+    model="gpt-oss",
     instructions="""
 You answer questions about the movie *Back to the Future*.
 You have access to two search tools:

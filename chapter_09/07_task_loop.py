@@ -1,8 +1,61 @@
 import asyncio
 import os
+import sys
+
+sys.stdout.reconfigure(encoding="utf-8")
+
 from pydantic import BaseModel, Field
-from agents import Agent, Runner
+from agents import (
+    Agent,
+    Runner,
+    set_default_openai_client,
+    set_default_openai_api,
+    set_trace_processors,
+)
 from agents.mcp import MCPServerStdio
+from agents.tracing import TracingProcessor
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+
+load_dotenv()
+
+client = AsyncOpenAI(
+    base_url=os.getenv("NRP_BASE_URL"),
+    api_key=os.getenv("NRP_API_KEY"),
+)
+set_default_openai_client(client, use_for_tracing=False)
+set_default_openai_api("chat_completions")
+
+
+class ConsoleTracingProcessor(TracingProcessor):
+    """Prints trace/span utilization (tokens, duration) to the console."""
+
+    def on_trace_start(self, trace):
+        print(f"\n[trace] '{trace.name}' started")
+
+    def on_trace_end(self, trace):
+        print(f"[trace] '{trace.name}' finished")
+
+    def on_span_start(self, span):
+        pass
+
+    def on_span_end(self, span):
+        data = span.span_data.export()
+        summary = f"  [span] {data.get('type', 'unknown')}"
+        if data.get("name"):
+            summary += f" - {data['name']}"
+        if data.get("usage"):
+            summary += f" | usage={data['usage']}"
+        print(summary)
+
+    def shutdown(self):
+        pass
+
+    def force_flush(self):
+        pass
+
+
+set_trace_processors([ConsoleTracingProcessor()])
 
 
 class TaskItem(BaseModel):
@@ -75,7 +128,7 @@ and transformation instructions, read the file,
 apply the transformation, and write the result.
 Report success or failure for each task.
 """,
-    model="gpt-4o",
+    model="gpt-oss",
     output_type=TaskResult,
 )
 
@@ -93,6 +146,7 @@ async def run_task_loop(
                 os.path.abspath("./workspace"),
             ],
         },
+        client_session_timeout_seconds=90,
     )
     search_server = MCPServerStdio(
         name="Brave Search",
@@ -101,6 +155,7 @@ async def run_task_loop(
             "args": ["-y", "@anthropic/brave-search-mcp"],
             "env": {"BRAVE_API_KEY": os.environ.get("BRAVE_API_KEY", "")},
         },
+        client_session_timeout_seconds=90,
     )
 
     async with filesystem_server, search_server:

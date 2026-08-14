@@ -175,3 +175,14 @@ cython_debug/
 
 # generated images
 gen_images/
+
+# Local AI coding tool state/config (not course content)
+.claude/
+.kilo/
+
+# Downloaded TTS voice models (auto-downloaded on first run)
+chapter_08/piper_voices/
+
+# Stray test artifacts
+test.jpg
+

@@ -1,3 +1,6 @@
+# NOTE: Not migrated to NRP. This lesson uses `ImageGenerationTool` (gpt-image-1),
+# an OpenAI-hosted tool with no NRP equivalent (NRP has no image-generation model).
+# Requires a real OPENAI_API_KEY to run.
 import asyncio
 import base64
 import os

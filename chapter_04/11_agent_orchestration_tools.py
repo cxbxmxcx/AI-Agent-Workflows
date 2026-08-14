@@ -1,11 +1,68 @@
 import asyncio
 import os
+import sys
 from pathlib import Path
 from typing import List
 
-from agents import Agent, Runner, function_tool
+sys.stdout.reconfigure(encoding="utf-8")
+
+from agents import (
+    Agent,
+    Runner,
+    function_tool,
+    set_default_openai_client,
+    set_default_openai_api,
+    set_trace_processors,
+)
 from agents.mcp import MCPServerStdio, MCPServerStdioParams
+from agents.tracing import TracingProcessor
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
 from pydantic import BaseModel
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Point the Agents SDK at the NRP (Nautilus) OpenAI-compatible endpoint
+client = AsyncOpenAI(
+    base_url=os.getenv("NRP_BASE_URL"),
+    api_key=os.getenv("NRP_API_KEY"),
+)
+set_default_openai_client(client, use_for_tracing=False)
+set_default_openai_api("chat_completions")
+
+
+class ConsoleTracingProcessor(TracingProcessor):
+    """Prints trace/span utilization (tokens, duration) to the console."""
+
+    def on_trace_start(self, trace):
+        print(f"\n[trace] '{trace.name}' started")
+
+    def on_trace_end(self, trace):
+        print(f"[trace] '{trace.name}' finished")
+
+    def on_span_start(self, span):
+        pass
+
+    def on_span_end(self, span):
+        data = span.span_data.export()
+        summary = f"  [span] {data.get('type', 'unknown')}"
+        if data.get("name"):
+            summary += f" - {data['name']}"
+        if data.get("usage"):
+            summary += f" | usage={data['usage']}"
+        print(summary)
+
+    def shutdown(self):
+        pass
+
+    def force_flush(self):
+        pass
+
+
+# Replace the default OpenAI-backend exporter with a local console printer,
+# so utilization is visible without needing a real OpenAI API key
+set_trace_processors([ConsoleTracingProcessor()])
 
 SANDBOX = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = Path(__file__).with_name("04_research_tools_mcp_server.py").resolve()
@@ -16,6 +73,7 @@ research_srv = MCPServerStdio(
         command="mcp",
         args=["run", str(SCRIPT)],
     ),
+    client_session_timeout_seconds=90,
 )
 thinking_srv = MCPServerStdio(
     name="sequential-thinking",
@@ -23,6 +81,7 @@ thinking_srv = MCPServerStdio(
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
     },
+    client_session_timeout_seconds=90,
 )
 fs_srv = MCPServerStdio(
     name="filesystem",
@@ -30,6 +89,7 @@ fs_srv = MCPServerStdio(
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
     },
+    client_session_timeout_seconds=90,
 )
 
 
@@ -52,6 +112,7 @@ Never make up or invent any research sources.
 """,
         output_type=ResearchSourcesModel,
         mcp_servers=[research_srv],
+        model="gpt-oss",
     )
     async with research_srv:
         result = await Runner.run(agent, instructions)
@@ -71,6 +132,7 @@ Your role is to read and write files.
 Never make up or invent any ouput.
 """,
         mcp_servers=[fs_srv],
+        model="gpt-oss",
     )
     async with fs_srv:
         result = await Runner.run(agent, instructions)
@@ -88,6 +150,7 @@ Use the filesystem agent to help find existing research and update it.
 Use the filesystem agent to write the output as a text file.
 """,
     tools=[research_agent, filesystem_agent],
+    model="gpt-oss",
 )
 
 

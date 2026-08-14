@@ -53,6 +53,7 @@ Never make up or invent any ouput.
                 command="mcp",
                 args=["run", str(SCRIPT)],
             ),
+            client_session_timeout_seconds=90,
         ),
         MCPServerStdio(
             name="sequential-thinking",
@@ -60,6 +61,7 @@ Never make up or invent any ouput.
                 "command": "npx",
                 "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
             },
+            client_session_timeout_seconds=90,
         ),
         MCPServerStdio(
             name="filesystem",
@@ -67,6 +69,7 @@ Never make up or invent any ouput.
                 "command": "npx",
                 "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
             },
+            client_session_timeout_seconds=90,
         ),
     ]
 

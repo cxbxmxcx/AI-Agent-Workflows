@@ -7,13 +7,16 @@ import os
 
 # Load API key from .env file
 load_dotenv()
-api_key = os.getenv('OPENAI_API_KEY')
+api_key = os.getenv('NRP_API_KEY')
 # Ensure the API key is available
 if not api_key:
-    raise ValueError("No API key found. Please check your .env file.")
-client = OpenAI(api_key=api_key)
+    raise ValueError("No NRP_API_KEY found. Please check your .env file.")
+client = OpenAI(
+    base_url=os.getenv("NRP_BASE_URL"),
+    api_key=api_key,
+)
 
-def get_embedding(text, model="text-embedding-ada-002"):
+def get_embedding(text, model="qwen3-embedding"):
     text = text.replace("\n", " ")
     return client.embeddings.create(input = [text], model=model).data[0].embedding
 

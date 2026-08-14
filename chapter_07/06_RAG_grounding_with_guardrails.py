@@ -1,4 +1,8 @@
 import asyncio
+import os
+import sys
+
+sys.stdout.reconfigure(encoding="utf-8")
 
 from agents import (
     Agent,
@@ -8,12 +12,55 @@ from agents import (
     Runner,
     function_tool,
     output_guardrail,
+    set_default_openai_client,
+    set_default_openai_api,
+    set_trace_processors,
 )
+from agents.tracing import TracingProcessor
 from dotenv import load_dotenv
+from openai import AsyncOpenAI
 from pydantic import BaseModel
 
 # Load environment variables from .env file
 load_dotenv()
+
+client = AsyncOpenAI(
+    base_url=os.getenv("NRP_BASE_URL"),
+    api_key=os.getenv("NRP_API_KEY"),
+)
+set_default_openai_client(client, use_for_tracing=False)
+set_default_openai_api("chat_completions")
+
+
+class ConsoleTracingProcessor(TracingProcessor):
+    """Prints trace/span utilization (tokens, duration) to the console."""
+
+    def on_trace_start(self, trace):
+        print(f"\n[trace] '{trace.name}' started")
+
+    def on_trace_end(self, trace):
+        print(f"[trace] '{trace.name}' finished")
+
+    def on_span_start(self, span):
+        pass
+
+    def on_span_end(self, span):
+        data = span.span_data.export()
+        summary = f"  [span] {data.get('type', 'unknown')}"
+        if data.get("name"):
+            summary += f" - {data['name']}"
+        if data.get("usage"):
+            summary += f" | usage={data['usage']}"
+        print(summary)
+
+    def shutdown(self):
+        pass
+
+    def force_flush(self):
+        pass
+
+
+set_trace_processors([ConsoleTracingProcessor()])
 
 # Simple in‑memory knowledge base
 _special_knowledge_db = [
@@ -79,7 +126,7 @@ Your task is to evaluate the correctness of answers
 based on the provided question, context used,
 and output answer.
 """,
-    model="gpt-4o",  # Specify the model to use
+    model="gpt-oss",  # Specify the model to use
     output_type=GroundedAnswer,
     tools=[get_last_context],
 )
@@ -121,7 +168,7 @@ to fetch relevant context for the user's query.
 """,
     output_type=AnswerResult,
     tools=[search_knowledge_by_keyword],
-    model="gpt-4o",  # Specify the model to use
+    model="gpt-oss",  # Specify the model to use
     output_guardrails=[ground_answer],
 )
 

@@ -4,6 +4,8 @@
 
 This repository contains sample code for the book "Build a Deep Research Agent from Scratch." The code demonstrates how to create and run an AI agent using OpenAI's tools and APIs.
 
+> **Taking this as a course?** See [`STUDENT_SETUP.md`](STUDENT_SETUP.md) for this class's setup — the code runs against a free, self-hosted NRP endpoint instead of a paid OpenAI account, plus Node.js/MCP setup and troubleshooting steps.
+
 ## Setup Instructions
 
 ### 1. Clone the Repository

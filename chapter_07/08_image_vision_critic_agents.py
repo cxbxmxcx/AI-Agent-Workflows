@@ -1,3 +1,6 @@
+# NOTE: Not migrated to NRP. This lesson uses `ImageGenerationTool` (gpt-image-1)
+# and vision/image-input via the Responses API, neither of which NRP's chat-only
+# gateway supports. Requires a real OPENAI_API_KEY to run.
 import asyncio
 import base64
 import os

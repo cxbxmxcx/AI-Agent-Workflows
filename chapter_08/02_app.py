@@ -1,4 +1,6 @@
 # app.py
+# NOTE: Not migrated to NRP. This backend uses `ImageGenerationTool` (gpt-image-1),
+# an OpenAI-hosted tool with no NRP equivalent. Requires a real OPENAI_API_KEY to run.
 import base64
 
 # Agents SDK (matches your example import path)
