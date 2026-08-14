@@ -1,20 +1,24 @@
-# AI Agents In Action (2nd Edition)
+# AI Agent Workflows — NRP Edition
 
-[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![OpenAI](https://img.shields.io/badge/OpenAI-API-blue)](https://platform.openai.com/) [![MCP](https://img.shields.io/badge/Protocol-MCP-orange)](https://platform.openai.com/docs/guides/mcp)
+[![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![NRP](https://img.shields.io/badge/inference-NRP-orange)](https://nrp.ai/) [![MCP](https://img.shields.io/badge/Protocol-MCP-orange)](https://modelcontextprotocol.io/)
 
-This repository contains sample code for the book "Build a Deep Research Agent from Scratch." The code demonstrates how to create and run an AI agent using OpenAI's tools and APIs.
+This is the class repository for this course. It's a modified version of the sample code from the book *"Build a Deep Research Agent from Scratch"*, adapted so every lesson runs against **NRP (National Research Platform / Nautilus)** — a free, self-hosted, OpenAI-compatible inference endpoint — instead of a paid OpenAI account. You do not need an OpenAI account or API key for the vast majority of this course.
 
-> **Taking this as a course?** See [`STUDENT_SETUP.md`](STUDENT_SETUP.md) for this class's setup — the code runs against a free, self-hosted NRP endpoint instead of a paid OpenAI account, plus Node.js/MCP setup and troubleshooting steps.
+> 📘 **For full setup details, chapter-by-chapter requirements, and troubleshooting, see [`STUDENT_SETUP.md`](STUDENT_SETUP.md).** The quick version is below.
 
 ## Setup Instructions
 
 ### 1. Clone the Repository
 
-To get started, clone this repository to your local machine:
+```bash
+git clone https://github.com/vinodkahuja/AI-Agent-Workflows.git
+cd AI-Agent-Workflows
+```
+
+Before each class, pull the latest updates:
 
 ```bash
-git clone https://github.com/cxbxmxcx/AI-Agent-Workflows.git
-cd AI-Agent-Workflows
+git pull
 ```
 
 ### 2. Create Your Environment
@@ -43,29 +47,22 @@ If you prefer to use an external Python environment, ensure you set the Python p
 
 ### 3. Install Dependencies
 
-#### Path A: Using VS Code Debugging
-
-If you have VS Code, you can simply start debugging (press `F5`) to run the examples. The required dependencies will be installed automatically as part of the debugging process.
-
-#### Path B: Manual Installation
-
-Alternatively, you can manually install the dependencies using pip:
-
 ```bash
 pip install -r requirements.txt
 ```
 
+See `STUDENT_SETUP.md` for additional non-Python tools this course also needs (Node.js — a specific version matters, Graphviz, `uv`), since those aren't installed via pip.
+
 ### 4. Configure the Environment
 
-Create a `.env` file in the root directory to store your OpenAI API key. Use the provided `.env.example` file as a template:
-
-#### Example `.env` file:
+Create a `.env` file in the root directory with your NRP credentials (**not** an OpenAI key — this repo has been repointed to a free NRP endpoint):
 
 ```
-OPENAI_API_KEY=your_openai_api_key_here
+NRP_API_KEY=your_nrp_api_key_here
+NRP_BASE_URL=https://ellm.nrp-nautilus.io/v1
 ```
 
-Replace `your_openai_api_key_here` with your actual OpenAI API key. You can obtain an API key from [OpenAI's API Keys page](https://platform.openai.com/account/api-keys).
+Ask your instructor for the token if you don't have one. See `.env.example` for a copy-paste template. Never commit `.env` to version control.
 
 ### 5. Run the Code
 
@@ -80,4 +77,18 @@ This will run the agent and display the output in the terminal.
 ## Notes
 
 - Ensure you are using the correct Python interpreter that matches your environment.
-- The `.env` file should not be shared or committed to version control to keep your API key secure.
+- The `.env` file should not be shared or committed to version control to keep your credentials secure.
+- Do not follow any OpenAI-specific setup instructions you find referenced elsewhere in this repo (e.g. in code comments or chapter files) — this repo has been adapted to use NRP; `STUDENT_SETUP.md` is the authoritative guide for this class.
+
+## About this repo
+
+This is a fork of the original book's companion repository, [cxbxmxcx/AI-Agent-Workflows](https://github.com/cxbxmxcx/AI-Agent-Workflows), modified for classroom use:
+
+- All chapters repointed from OpenAI's API to NRP's free, self-hosted, OpenAI-compatible endpoint
+- Local console-based tracing (no OpenAI account needed for tracing either)
+- Several pre-existing bugs fixed (guardrail logic, missing exception handling, MCP connection timeouts)
+- Free, open-source alternatives added for the two capabilities NRP doesn't support: image generation (chapters 7/8, via Pollinations.ai) and voice (chapter 8, via Whisper + Piper)
+
+## License
+
+MIT — see [LICENSE](LICENSE). Original code and book content © the original author; modifications for NRP/classroom use as noted above.
