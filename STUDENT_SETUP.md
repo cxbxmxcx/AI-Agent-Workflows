@@ -22,9 +22,27 @@ This course uses the same code as *"Build a Deep Research Agent from Scratch"* (
 
 ## 2. Get the code
 
+Clone the class repo (this is the instructor's fork, kept up to date with NRP-specific fixes — not the original book repo):
+
 ```bash
-git clone https://github.com/cxbxmxcx/AI-Agent-Workflows.git
+git clone https://github.com/vinodkahuja/AI-Agent-Workflows.git
 cd AI-Agent-Workflows
+```
+
+### Staying up to date before each class
+
+New chapters and fixes get pushed to this repo throughout the course. **Before each class, pull the latest changes:**
+
+```bash
+cd AI-Agent-Workflows
+git pull
+```
+
+If `git pull` reports a conflict because you've edited a course file yourself, the simplest fix is to stash your local changes first, pull, then re-apply them:
+```bash
+git stash
+git pull
+git stash pop
 ```
 
 ## 3. Install Node.js 22 LTS (do this even if you already have another Node version)
@@ -121,7 +139,7 @@ python chapter_03/02_mcp_agent_stdio_server.py
 | Chapter 6 (`04_hybrid_memory_agent.py`, `04x_...`) | Needs `uvx` (comes with `uv`, already in requirements) to run the `chroma-mcp` server |
 | Chapters 7/8/11 — Arize Phoenix tracing files (`09_arize_phoenix_tracing.py`, `07_phoenix_metadata.py`, `05_evaluation_feedback_tips.py`) | Need a local Phoenix collector running: `pip install arize-phoenix` (already in requirements) then run `phoenix serve` in a separate terminal before executing the script — it listens on `localhost:6006` |
 | Chapter 9/10 — deep-research/capstone loops using Brave Search | Need a `BRAVE_API_KEY` in `.env` (get one free at [brave.com/search/api](https://brave.com/search/api/)) — without it, those specific demo scripts will fail at the MCP search-server step, unrelated to NRP |
-| Chapter 7 (`07_image_generation_agent.py`, `08_image_vision_critic_agents.py`) and Chapter 8 (all 3 HTML voice-agent demos, `02_app.py`) | **Not supported on NRP.** These use OpenAI's hosted image-generation tool and Realtime/voice API, which have no NRP equivalent. They require a real `OPENAI_API_KEY` and OpenAI billing to run — each file has a comment at the top explaining this. Skip these unless you specifically want to demo OpenAI's paid image/voice features separately. |
+| Chapter 7 (`07_image_generation_agent.py`, `08_image_vision_critic_agents.py`) and Chapter 8 (`01_embedded_agent_speech*.html`, `03_realtime_image_agent.html`, `02_app.py`) | **The originals are not supported on NRP** — they use OpenAI's hosted image-generation tool and Realtime/voice API, which have no NRP equivalent, and require a real `OPENAI_API_KEY` + OpenAI billing (each file has a comment at the top explaining this). **Free NRP-based alternatives exist instead** — use these: `chapter_07/07x_image_generation_agent_free.py` and `08x_image_vision_critic_agents_free.py` (Pollinations.ai for image generation, `gemma-small` for vision), `chapter_08/02x_app.py` (same Pollinations swap, as a FastAPI backend), and `chapter_08/01x_embedded_agent_speech.py` (a local voice pipeline: faster-whisper for speech-to-text, `gpt-oss` for the conversation, Piper for text-to-speech — run with `python 01x_embedded_agent_speech.py`, needs a working microphone). The `x` files need no OpenAI account at all. |
 | Chapter 8 Docker setup | Only needed if containerizing `02_app.py` — see `chapter_08/README_DOCKER.md` |
 | Chapter 4 (`05_visualizing_agent_flows.py`) | Needs Graphviz installed and on PATH, or `draw_graph(...).view()` will fail to render |
 
