@@ -6,7 +6,7 @@ pylint  # Linter for Python code to enforce coding standards
 flake8  # Combines linting tools for style guide enforcement
 isort  # Automatically sorts Python imports
 mypy  # Static type checker for Python
-mcp[cli]
+mcp[cli]<2.0.0  # Pin to 1.x: mcp 2.0.0 renamed/moved FastMCP, breaking every mcp.server.fastmcp import in this course
 uv # for project management and running application servers for Claude etc.
 openai-agents[viz]  # Visualization tools for OpenAI agents
 
