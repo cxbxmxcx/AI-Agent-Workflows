@@ -25,6 +25,7 @@ Run
 Notes
 - The app module used by Uvicorn is `02_app:app`. Ensure you run the container from the project root so Python can import.
 - Provide any required environment variables (for example `OPENAI_API_KEY`) via `-e`.
+- This app uses the hosted `ImageGenerationTool`, which only OpenAI serves, so `OPENAI_BASE_URL` does not apply here. Keep it pointed at api.openai.com.
 - If the app depends on additional services (Chroma, MCP servers, etc.), start them separately and set any service URLs or paths as env vars before running the container.
 - If you have a `requirements.txt` at project root, it will be installed during the image build. Otherwise minimal runtime deps are installed automatically.
 

@@ -12,6 +12,15 @@ Includes metacognitive patterns from Listings 10.10-10.12:
 - Knowledge boundary awareness (knowing what you don't know)
 """
 
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
 import json
 import os

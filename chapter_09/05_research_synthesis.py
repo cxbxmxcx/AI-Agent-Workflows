@@ -1,3 +1,12 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
 import os
 from pydantic import BaseModel, Field
@@ -124,7 +133,7 @@ follow_up_questions drive tactical execution.
 When you believe you have sufficient information to answer
 the research goal comprehensively, set goal_satisfied to true.
 """,
-    model="gpt-4o",
+    model=agents_config.model("gpt-4o"),
     output_type=ResearchIteration,
 )
 
@@ -142,7 +151,7 @@ and note any gaps or limitations in the research.
 Mark any plan sub-topics that were not fully completed
 as gaps in your report.
 """,
-    model="gpt-4o",
+    model=agents_config.model("gpt-4o"),
     output_type=ResearchReport,
 )
 

@@ -1,10 +1,18 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
-import base64
 import os
 import subprocess
 import sys
 
-from agents import Agent, ImageGenerationTool, Runner, trace
+from agents import Agent, Runner, trace
 
 
 def open_file(path: str) -> None:
@@ -18,17 +26,15 @@ def open_file(path: str) -> None:
         print(f"Don't know how to open files on this platform: {sys.platform}")
 
 
-async def save_and_open(
-    image_bytes: bytes, path: str, open_after_save: bool = True
-) -> None:
-    # Ensure folder exists and do filesystem + OS operations in a worker thread
-    def _write():
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "wb") as f:
-            f.write(image_bytes)
+async def save_and_open(result, path: str) -> None:
+    """Write the image produced by a run to ``path`` and open it.
 
-    await asyncio.to_thread(_write)
-    if open_after_save:
+    The save itself is done by :func:`agents_config.save_image`, which reads
+    the image back the way the tool in use produced it. Everything runs in a
+    worker thread so the event loop is not blocked.
+    """
+    image_bytes = await asyncio.to_thread(agents_config.save_image, result, path)
+    if image_bytes:
         await asyncio.to_thread(open_file, path)
 
 
@@ -50,20 +56,10 @@ async def generate_one(
         if hasattr(result, "final_output"):
             print(result.final_output)
 
-        # Find the first image tool result and save it
-        for item in getattr(result, "new_items", []) or []:
-            if (
-                getattr(item, "type", None) == "tool_call_item"
-                and getattr(getattr(item, "raw_item", None), "type", None)
-                == "image_generation_call"
-            ):
-                img_result = getattr(getattr(item, "raw_item", None), "result", None)
-                if img_result:
-                    image_bytes = base64.b64decode(img_result)
-                    image_path = os.path.join("gen_images", f"image{idx}.png")
-                    # Do file I/O and OS open without holding the semaphore
-                    await save_and_open(image_bytes, image_path, open_after_save=True)
-                    break
+        # Save the image the tool produced, if it produced one
+        image_path = os.path.join("gen_images", f"image{idx}.png")
+        # Do file I/O and OS open without holding the semaphore
+        await save_and_open(result, image_path)
     except Exception as e:
         print(f"Error generating image {idx}: {e}")
 
@@ -185,17 +181,8 @@ A horizontal spectrum/slider visualization as a 3D diorama landscape. LEFT SIDE 
 
 Each prompt includes the style header, educational labels visible in 3-5 seconds, and 2-3 playful supporting elements!
 """,
-        model="gpt-5.2",
-        tools=[
-            ImageGenerationTool(
-                tool_config={
-                    "type": "image_generation",
-                    "quality": "high",
-                    "model": "gpt-image-1.5",
-                    "size": "1536x1024",
-                }
-            )
-        ],
+        model=agents_config.model("gpt-5.2"),
+        tools=[agents_config.image_tool(size="1536x1024", model="gpt-image-1.5")],
     )
 
     total_images = 8

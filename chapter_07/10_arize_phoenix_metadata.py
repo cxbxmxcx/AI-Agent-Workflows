@@ -1,3 +1,12 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 # docker run -it --rm -p 6006:6006 -p 4317:4317 arizephoenix/phoenix:latest
 
 import os
@@ -22,7 +31,7 @@ tracer_provider = register(
     auto_instrument=True,  # Auto-instrument your app based on installed dependencies
 )
 
-model = "gpt-5-mini"
+model = agents_config.model("gpt-5-mini")
 agent = Agent(name="Assistant", instructions="Always answer in a Haiku", model=model)
 
 

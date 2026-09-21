@@ -1,3 +1,12 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
 import base64
 import os
@@ -5,7 +14,7 @@ import subprocess
 import sys
 import tempfile
 
-from agents import Agent, ImageGenerationTool, Runner, trace
+from agents import Agent, Runner, trace
 
 
 def open_file(path: str) -> None:
@@ -203,17 +212,8 @@ async def main():
 **Image Prompt:**
 "Hyper-realistic 3D scene of an inspiring graduation pathway where a character transforms from 'Prompt Tinkerer' to 'Agent Architect.' Scene shows three milestone gates: Gate 1 (Build) with OpenAI SDK construction tools, Gate 2 (Connect) with MCP integration bridges, Gate 3 (Scale) with multi-agent collaboration platforms. Character walks confidently toward future cityscape filled with autonomous agent systems working harmoniously. Graduation cap transforms into architect's hard hat along the journey. Infographic elements include career progression maps, skill development timelines, and achievement unlock indicators. Inspiring sunrise lighting makes the journey feel like an exciting adventure toward professional mastery and meaningful impact."
 """,
-        model="o3",
-        tools=[
-            ImageGenerationTool(
-                tool_config={
-                    "type": "image_generation",
-                    "quality": "high",
-                    "model": "gpt-image-1",
-                    "size": "1024x1536",
-                }
-            )
-        ],
+        model=agents_config.model("o3"),
+        tools=[agents_config.image_tool(size="1024x1536")],
     )
 
     images = 30
@@ -225,17 +225,9 @@ async def main():
                 agent, f"Please create slide image #{image + 1} of {images}"
             )
             print(result.final_output)
-            for item in result.new_items:
-                if (
-                    item.type == "tool_call_item"
-                    and item.raw_item.type == "image_generation_call"
-                    and (img_result := item.raw_item.result)
-                ):
-                    os.makedirs("gen_images", exist_ok=True)
-                    image_path = os.path.join("gen_images", f"slide{image + 1}.png")
-                    with open(image_path, "wb") as img_file:
-                        img_file.write(base64.b64decode(img_result))
-                    open_file(image_path)
+            image_path = os.path.join("gen_images", f"slide{image + 1}.png")
+            if agents_config.save_image(result, image_path):
+                open_file(image_path)
 
 
 if __name__ == "__main__":

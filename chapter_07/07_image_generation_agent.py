@@ -1,10 +1,18 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
-import base64
 import os
 import subprocess
 import sys
 
-from agents import Agent, ImageGenerationTool, Runner, trace
+from agents import Agent, Runner, trace
 
 
 def open_file(path: str) -> None:
@@ -32,36 +40,19 @@ async def main():
 - **Icons**: Use universally recognizable symbols (lightbulbs for ideas, gears for processing, hearts for alignment, etc.)
 - **Mood**: Optimistic, educational, and slightly futuristic without being cold or intimidating
 """,
-        model="gpt-5-mini",
-        tools=[
-            ImageGenerationTool(
-                tool_config={
-                    "type": "image_generation",
-                    "quality": "high",
-                    "model": "gpt-image-1",
-                    "size": "1536x1024",
-                }
-            )
-        ],
+        model=agents_config.model("gpt-5-mini"),
+        tools=[agents_config.image_tool(size="1536x1024")],
     )
 
     image_description = "an agent generating an image"
     image_name = "agent_image_generation"
+    image_path = os.path.join("gen_images", f"{image_name}.png")
 
     with trace("Image generation"):
         result = await Runner.run(agent, image_description)
         print(result.final_output)
-        for item in result.new_items:
-            if (
-                item.type == "tool_call_item"
-                and item.raw_item.type == "image_generation_call"
-                and (img_result := item.raw_item.result)
-            ):
-                os.makedirs("gen_images", exist_ok=True)
-                image_path = os.path.join("gen_images", f"{image_name}.png")
-                with open(image_path, "wb") as img_file:
-                    img_file.write(base64.b64decode(img_result))
-                open_file(image_path)
+        if agents_config.save_image(result, image_path):
+            open_file(image_path)
 
 
 if __name__ == "__main__":

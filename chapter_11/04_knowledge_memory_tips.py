@@ -1,7 +1,16 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 from agents import Agent, Runner, SQLiteSession, function_tool
 
 kb = load_vector_kb(  # your FAISS/Weaviate/Chroma wrapper
-    embedding_model="text-embedding-3-small",  # choose embeddings deliberately
+    embedding_model=agents_config.embedding_model("text-embedding-3-small"),  # choose embeddings deliberately
     index="HNSW",  # ANN (HNSW/IVF)
     shards=["product", "policy", "engineering"],  # shard by domain
 )

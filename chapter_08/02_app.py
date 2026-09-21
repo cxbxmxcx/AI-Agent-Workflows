@@ -1,8 +1,18 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 # app.py
-import base64
+import os
+import tempfile
 
 # Agents SDK (matches your example import path)
-from agents import Agent, ImageGenerationTool, Runner, trace
+from agents import Agent, Runner, trace
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,13 +23,8 @@ from pydantic import BaseModel, Field
 load_dotenv()
 
 # ----- Fixed configuration -----
-CONTROLLER_MODEL = "gpt-5-mini"  # the LLM running the agent
-TOOL_CONFIG = {
-    "type": "image_generation",
-    "quality": "high",
-    "model": "gpt-image-1",
-    "size": "1536x1024",
-}
+# the LLM running the agent
+CONTROLLER_MODEL = agents_config.model("gpt-5-mini")
 
 STYLE_GUIDELINES = """
 ## Style Guidelines for All Images:
@@ -62,40 +67,26 @@ def build_agent() -> Agent:
         name="Image generator",
         instructions=STYLE_GUIDELINES,
         model=CONTROLLER_MODEL,
-        tools=[ImageGenerationTool(tool_config=TOOL_CONFIG)],
+        tools=[agents_config.image_tool(size="1536x1024")],
     )
-
-
-def extract_image_b64(result) -> str | None:
-    """
-    Mirror your example's parsing logic to find the image generation tool's result (base64).
-    """
-    for item in getattr(result, "new_items", []) or []:
-        if (
-            getattr(item, "type", None) == "tool_call_item"
-            and getattr(item, "raw_item", None) is not None
-            and getattr(item.raw_item, "type", None) == "image_generation_call"
-            and getattr(item.raw_item, "result", None)
-        ):
-            return item.raw_item.result
-    return None
 
 
 @app.post("/generate", response_class=Response)
 async def generate(body: GenerateIn):
     # The only variable is the input text. Everything else is fixed in code.
-    agent = build_agent()
-    print(f"Generating image for input: {body.input}")
-    with trace("Image generation"):
-        result = await Runner.run(agent, body.input)
+    with tempfile.TemporaryDirectory() as workdir:
+        image_path = os.path.join(workdir, "image.png")
+        agent = build_agent()
+        print(f"Generating image for input: {body.input}")
+        with trace("Image generation"):
+            result = await Runner.run(agent, body.input)
 
-    b64 = extract_image_b64(result)
-    if not b64:
-        raise HTTPException(
-            status_code=500, detail="Image generation tool produced no output."
-        )
+        png_bytes = agents_config.save_image(result, image_path)
+        if not png_bytes:
+            raise HTTPException(
+                status_code=500, detail="Image generation tool produced no output."
+            )
 
     print("Image generation successful, returning PNG bytes.")
-    png_bytes = base64.b64decode(b64)
     # Return the PNG bytes directly. No filenames, no JSON—just the image.
     return Response(content=png_bytes, media_type="image/png")

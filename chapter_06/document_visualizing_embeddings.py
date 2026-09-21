@@ -1,3 +1,12 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 from openai import OpenAI
 import numpy as np
 from sklearn.decomposition import PCA
@@ -13,7 +22,7 @@ if not api_key:
     raise ValueError("No API key found. Please check your .env file.")
 client = OpenAI(api_key=api_key)
 
-def get_embedding(text, model="text-embedding-ada-002"):
+def get_embedding(text, model=agents_config.embedding_model("text-embedding-ada-002")):
     text = text.replace("\n", " ")
     return client.embeddings.create(input = [text], model=model).data[0].embedding
 

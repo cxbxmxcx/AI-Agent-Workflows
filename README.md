@@ -65,6 +65,55 @@ OPENAI_API_KEY=your_openai_api_key_here
 
 Replace `your_openai_api_key_here` with your actual OpenAI API key. You can obtain an API key from [OpenAI's API Keys page](https://platform.openai.com/account/api-keys).
 
+#### Using a third-party OpenAI-compatible provider
+
+If you are running the examples against a relay or a token plan from another
+vendor, uncomment `OPENAI_BASE_URL` in your `.env` and point it at that
+provider:
+
+```
+OPENAI_API_KEY=the_key_your_provider_issued
+OPENAI_BASE_URL=https://your-provider.example.com/v1
+AGENT_MODEL=the_model_your_provider_serves
+```
+
+Every example imports `agents_config.py`, which does three things once
+`OPENAI_BASE_URL` is set:
+
+- switches the Agents SDK from `/v1/responses` to `/v1/chat/completions`,
+  because most third-party providers only implement the latter;
+- disables OpenAI tracing, which would otherwise be rejected by
+  api.openai.com;
+- and, if `AGENT_MODEL` is set, runs every agent on that model.
+
+`AGENT_MODEL` matters because most examples hardcode the OpenAI models the book
+uses (`gpt-4o`, `gpt-5-mini`, `o3`, `gpt-4.1`), and the rest name no model at
+all, so they fall back to the SDK's own default (`gpt-5.6-luna` in
+openai-agents 0.22.2). Neither is something most providers serve. Set
+`AGENT_MODEL` and every agent uses it; leave it unset and each example keeps the
+model the book chose.
+
+The first two are overridable with `OPENAI_AGENTS_CHAT_API=0` and
+`OPENAI_AGENTS_DISABLE_TRACING=0`. With no `OPENAI_BASE_URL` set, nothing
+changes and the examples behave exactly as described in the book.
+
+Two things are not agents and so need their own model settings:
+
+- the image examples (`chapter_07/07`, `chapter_07/08`, `chapter_08/02_app.py`
+  and `bonus_projects/`) ask for `gpt-image-1`, which only OpenAI hosts. On a
+  third-party endpoint `agents_config.image_tool()` swaps in a local tool that
+  calls `POST /images/generations`, so set `IMAGE_MODEL` to an image model your
+  provider serves (and `IMAGE_SIZE` if it rejects the size the book asks for);
+- the embedding examples (`chapter_06/document_query_chromadb.py` and
+  `chapter_06/document_visualizing_embeddings.py`) need `EMBEDDING_MODEL`, which
+  does not fall back to `AGENT_MODEL` because a chat model cannot produce
+  embeddings.
+
+The vision call in `chapter_07/08_image_vision_critic_agents.py` talks to the
+provider directly rather than through an agent, so it follows `VISION_MODEL`,
+falling back to `AGENT_MODEL`. `chapter_02/02` sets `temperature=0.0`, which
+reasoning-style models reject — set `AGENT_TEMPERATURE=1` if yours is one.
+
 ### 5. Run the Code
 
 To execute the sample code, navigate to the desired chapter and run the Python file. For example:

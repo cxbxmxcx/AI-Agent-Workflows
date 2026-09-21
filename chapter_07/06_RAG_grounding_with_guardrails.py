@@ -1,3 +1,12 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
 
 from agents import (
@@ -79,7 +88,7 @@ Your task is to evaluate the correctness of answers
 based on the provided question, context used,
 and output answer.
 """,
-    model="gpt-4o",  # Specify the model to use
+    model=agents_config.model("gpt-4o"),  # Specify the model to use
     output_type=GroundedAnswer,
     tools=[get_last_context],
 )
@@ -121,7 +130,7 @@ to fetch relevant context for the user's query.
 """,
     output_type=AnswerResult,
     tools=[search_knowledge_by_keyword],
-    model="gpt-4o",  # Specify the model to use
+    model=agents_config.model("gpt-4o"),  # Specify the model to use
     output_guardrails=[ground_answer],
 )
 

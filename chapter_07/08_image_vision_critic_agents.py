@@ -1,11 +1,18 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
-import base64
 import os
 import subprocess
 import sys
 
-from agents import Agent, ImageGenerationTool, Runner, function_tool, trace
-from openai import OpenAI
+from agents import Agent, Runner, function_tool, trace
 from pydantic import BaseModel
 
 
@@ -20,12 +27,6 @@ def open_file(path: str) -> None:
         print(f"Don't know how to open files on this platform: {sys.platform}")
 
 
-# Function to encode the image
-def encode_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
-
-
 @function_tool
 def describe_image(image_path: str, prompt: str) -> str:
     """Describe the image using the GPT-5 model.
@@ -35,25 +36,11 @@ def describe_image(image_path: str, prompt: str) -> str:
     Returns:
         str: Description of the image.
     """
-    client = OpenAI()
-    base64_image = encode_image(image_path)
-
-    response = client.responses.create(
-        model="gpt-5-mini",
-        input=[
-            {
-                "role": "user",
-                "content": [
-                    {"type": "input_text", "text": "what's in this image?"},
-                    {
-                        "type": "input_image",
-                        "image_url": f"data:image/jpeg;base64,{base64_image}",
-                    },
-                ],
-            }  # type: ignore
-        ],
+    return agents_config.vision_completion(
+        image_path,
+        "what's in this image?",
+        agents_config.vision_model("gpt-5-mini"),
     )
-    return response.output_text
 
 
 style_guidelines = """
@@ -83,17 +70,8 @@ async def main():
     agent = Agent(
         name="Image generator",
         instructions=style_guidelines,
-        model="gpt-5-mini",
-        tools=[
-            ImageGenerationTool(
-                tool_config={
-                    "type": "image_generation",
-                    "quality": "high",
-                    "model": "gpt-image-1",
-                    "size": "1536x1024",
-                }
-            )
-        ],
+        model=agents_config.model("gpt-5-mini"),
+        tools=[agents_config.image_tool(size="1536x1024")],
     )
 
     class CritqueImage(BaseModel):
@@ -110,13 +88,14 @@ based on the provided specific criteria and style guidelines.
 {style_guidelines}
 {rubric}
 """,
-        model="gpt-5-mini",  # Specify the model to use
+        model=agents_config.model("gpt-5-mini"),  # Specify the model to use
         tools=[describe_image],
         output_type=CritqueImage,
     )
 
     image_description = "an agent generating an image"
     image_name = "agent_image_generation"
+    image_path = os.path.join("gen_images", f"{image_name}.png")
     feedback = ""
 
     with trace("Image generation"):
@@ -128,16 +107,7 @@ based on the provided specific criteria and style guidelines.
             )
             result = await Runner.run(agent, str(input))
             print(result.final_output)
-            for item in result.new_items:
-                if (
-                    item.type == "tool_call_item"
-                    and item.raw_item.type == "image_generation_call"
-                    and (img_result := item.raw_item.result)
-                ):
-                    os.makedirs("gen_images", exist_ok=True)
-                    image_path = os.path.join("gen_images", f"{image_name}.png")
-                    with open(image_path, "wb") as img_file:
-                        img_file.write(base64.b64decode(img_result))
+            agents_config.save_image(result, image_path)
             critique_result = await Runner.run(
                 critic,
                 f"Please critique the image at {image_path} with the prompt: {image_description}",

@@ -1,3 +1,12 @@
+import pathlib as _pathlib
+import sys as _sys
+
+_root = next(p for p in _pathlib.Path(__file__).resolve().parents
+             if (p / "agents_config.py").is_file())
+_sys.path.insert(0, str(_root))
+
+import agents_config  # noqa: E402,F401
+
 import asyncio
 import os
 from pydantic import BaseModel, Field
@@ -60,7 +69,7 @@ and suggest next steps for the team.
 Set agrees_goal_met to true only if you believe the research
 goal is comprehensively answered.
 """,
-    model="gpt-4o",
+    model=agents_config.model("gpt-4o"),
     output_type=Contribution,
 )
 
@@ -77,7 +86,7 @@ Be constructive but rigorous. Set agrees_goal_met to true only
 if you believe the collective findings are strong, well-sourced,
 and comprehensive enough to answer the goal.
 """,
-    model="gpt-4o",
+    model=agents_config.model("gpt-4o"),
     output_type=Contribution,
 )
 
@@ -94,7 +103,7 @@ comprehensively answers the research goal.
 Your confidence score should reflect how complete and
 well-supported the synthesis is.
 """,
-    model="gpt-4o",
+    model=agents_config.model("gpt-4o"),
     output_type=Contribution,
 )
 
