@@ -175,6 +175,15 @@ cython_debug/
 
 # generated images
 gen_images/
+gen_images copy/
+out.png
+donut_top_left*
+
+# Not book material: presentations, scratch graphs, local tool settings
+*.pptx
+Source.gv
+Source.gv.pdf
+**/.claude/settings.local.json
 
 # Publisher review documents (kept local, not part of the book code)
 Source code defect report*.docx
