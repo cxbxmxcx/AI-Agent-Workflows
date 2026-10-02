@@ -38,7 +38,7 @@ To check a copy of the repository for every problem below, run `python tools/che
 | m-01 | Typos in three file names. | Renamed; see the table in the README. | matches print (4.7, 4.11) |
 | m-02 | Typos in identifiers and prompts: `research_soruce`, `ouput` (eight files), `atleast` (three files), `braching`, `CritqueImage`. | Corrected everywhere. | yes |
 | m-03 | "witness the end of the end" in four files, and a garbled sentence in the San Francisco trip exercise. | "the end of the event"; "However, the Exploratorium is closed on the first day and there are no startups to tour." | yes (5.1, 5.11) |
-| m-04 | Header comments naming files that do not exist. | Each header names its own file. | yes |
+| m-04 | Header comments naming files that do not exist. | Each header names its own file. `chapter_03/01_complete_agent.py`, `chapter_03/01_complete_mcp_server.py` and `chapter_08/02_app.py` keep `# agent.py`, `# server.py` and `# app.py`, the names the chapter text gives them. | yes |
 | m-05 | `with_name("06_mcp_time_travel_tracker")` lacked `.py`. | Added. | yes |
 | m-06 | Thirteen ChatGPT citation markers (`:contentReference[oaicite:…]`) in the two chapter 8 speech pages, three of them visible on the page. | Removed. | yes (8.1) |
 | m-07 | Material the book never refers to. | Two presentations, generated images and a scratch graph are no longer tracked; `demo_project/` and `chapter_12/` moved to `extras/`. | no |

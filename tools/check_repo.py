@@ -62,9 +62,9 @@ REQUIRED_ENV = ["OPENAI_API_KEY", "BRAVE_API_KEY", "OPENAI_DEFAULT_MODEL"]
 
 # Header comments that name a file other than their own, on purpose
 HEADER_NOTES = {
-    "chapter_03/01_complete_agent.py": "named as in the chapter 3 text (author to confirm)",
-    "chapter_03/01_complete_mcp_server.py": "named as in the chapter 3 text (author to confirm)",
-    "chapter_08/02_app.py": "named as in the chapter 8 text (author to confirm)",
+    "chapter_03/01_complete_agent.py": "named as in the chapter 3 text (confirmed by the author)",
+    "chapter_03/01_complete_mcp_server.py": "named as in the chapter 3 text (confirmed by the author)",
+    "chapter_08/02_app.py": "named as in the chapter 8 text (confirmed by the author)",
 }
 
 
