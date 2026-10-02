@@ -35,7 +35,6 @@ ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {".git", ".venv", "venv", "env", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", ".ruff_cache"}
 TEXT_SUFFIXES = {".py", ".md", ".html", ".txt", ".json", ".yml", ".yaml", ".toml", ".mmd"}
 MAX_FILE_BYTES = 5 * 1024 * 1024
-LARGE_FILES_OK = ("chapter_06/chroma_script_store/",)  # the vector store the chapter 6 examples query
 
 # MCP servers the examples may launch, and how long a cold start may take
 ALLOWED_PACKAGES = {
@@ -56,7 +55,7 @@ DISTRIBUTIONS = {
     "agents": "openai-agents",
     "sklearn": "scikit-learn",
     "dotenv": "python-dotenv",
-    "phoenix": "arize-phoenix",
+    "phoenix": "arize-phoenix-otel",  # the examples import phoenix.otel
     "openinference": "openinference-instrumentation",
 }
 REQUIRED_ENV = ["OPENAI_API_KEY", "BRAVE_API_KEY", "OPENAI_DEFAULT_MODEL"]
@@ -368,7 +367,7 @@ def check_layout(files, report):
         name = rel(path)
         if any(t in name for t in TYPOS_IN_NAMES):
             report.fail("m-01", name, "typo in file name")
-        if path.stat().st_size > MAX_FILE_BYTES and not name.startswith(LARGE_FILES_OK):
+        if path.stat().st_size > MAX_FILE_BYTES:
             report.fail("m-07", name, f"{path.stat().st_size // 1_000_000} MB file in the book material")
         if path.suffix == ".pptx" or name.endswith(".claude/settings.local.json"):
             report.fail("m-07", name, "not book material")
