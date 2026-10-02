@@ -74,15 +74,17 @@ async def main():
             name="sequential-thinking",
             params={
                 "command": "npx",
-                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2026.8.31"],
             },
+            client_session_timeout_seconds=60,
         ),
         MCPServerStdio(
             name="filesystem",
             params={
                 "command": "npx",
-                "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
+                "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", SANDBOX],
             },
+            client_session_timeout_seconds=60,
         ),
     ]
 
