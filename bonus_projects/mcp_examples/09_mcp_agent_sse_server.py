@@ -9,7 +9,7 @@ from agents.mcp import MCPServerStdio
 
 async def main():
     # Define path to your sample files
-    SCRIPT = Path(__file__).with_name("01_claude_mcp_server.py").resolve()
+    SCRIPT = (Path(__file__).parents[2] / "chapter_03" / "01_claude_mcp_server.py").resolve()
 
     # Use async context manager to initialize the server
     async with MCPServerStdio(

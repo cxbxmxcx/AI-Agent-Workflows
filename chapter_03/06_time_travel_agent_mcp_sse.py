@@ -1,11 +1,11 @@
-# agent.py
+# 06_time_travel_agent_mcp_sse.py
 import asyncio
 from pathlib import Path
 
 from agents import Agent, Runner
 from agents.mcp import MCPServerSse
 
-SCRIPT = Path(__file__).with_name("06_mcp_time_travel_tracker").resolve()
+SCRIPT = Path(__file__).with_name("06_mcp_time_travel_tracker.py").resolve()
 
 # Simulate a series of historical travel events
 travel_events = [
