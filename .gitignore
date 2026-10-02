@@ -179,6 +179,12 @@ gen_images copy/
 out.png
 donut_top_left*
 
+# Chapter 9 task loop: keep the sample inputs, ignore what the agent writes
+chapter_09/workspace/*
+!chapter_09/workspace/meeting_notes.txt
+!chapter_09/workspace/quarterly_report.txt
+!chapter_09/workspace/README.md
+
 # Not book material: presentations, scratch graphs, local tool settings
 *.pptx
 Source.gv

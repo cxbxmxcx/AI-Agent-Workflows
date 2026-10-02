@@ -190,9 +190,10 @@ async def run_orchestrator_loop(
         name="Brave Search",
         params={
             "command": "npx",
-            "args": ["-y", "@anthropic/brave-search-mcp"],
+            "args": ["-y", "@brave/brave-search-mcp-server@2.1.4"],
             "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
         },
+        client_session_timeout_seconds=60,
     )
     async with search_server:
         workers = {
