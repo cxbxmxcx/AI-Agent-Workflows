@@ -30,7 +30,7 @@ research_plan_guardrail_agent = Agent(
     name="Research Plan Guardrail Agent",
     instructions="""
 You are an output guardrail agent.
-Confirm the research plan is sufficiently detailed, atleast 1000 characters in length.
+Confirm the research plan is sufficiently detailed, at least 1000 characters in length.
 If it is not sufficiently detailed, flag it.
 """,
     output_type=ResearchPlanModel,
@@ -78,7 +78,7 @@ Always hand off to the filesystem agent.
         instructions="""
 You are a filesystem assistant.
 Your role is to write the output as a text file.
-Never make up or invent any ouput.
+Never make up or invent any output.
 """,
     )
     # Instantiate the servers next…

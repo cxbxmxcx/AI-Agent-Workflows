@@ -38,7 +38,7 @@ Your role is to plan the research.
         instructions="""
 You are a filesystem assistant.
 Your role is to write the output as a text file.
-Never make up or invent any ouput.
+Never make up or invent any output.
 """,
     )
     # Instantiate the servers next…

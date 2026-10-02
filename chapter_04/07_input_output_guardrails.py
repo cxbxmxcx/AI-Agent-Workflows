@@ -55,7 +55,7 @@ async def research_output_guardrail(
         insufficient_research = False
 
     return GuardrailFunctionOutput(
-        output_info="research plan length: {len(output.research_plan)}",
+        output_info=f"research plan length: {len(output.research_plan)}",
         tripwire_triggered=insufficient_research,
     )
 

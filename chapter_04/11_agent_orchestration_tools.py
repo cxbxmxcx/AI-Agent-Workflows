@@ -68,7 +68,7 @@ async def filesystem_agent(instructions: str) -> str:
         instructions="""
 You are a filesystem assistant.
 Your role is to read and write files.
-Never make up or invent any ouput.
+Never make up or invent any output.
 """,
         mcp_servers=[fs_srv],
     )
