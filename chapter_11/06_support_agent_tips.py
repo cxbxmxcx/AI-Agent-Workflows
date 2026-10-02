@@ -15,7 +15,7 @@ support = Agent(
     instructions=(
         "Verify identity before account actions. Cite policies. "
         "If unsure or user is upset, call escalate_to_human."
-        "Pass on complex queries to retrieval_agent."
+        " Pass on complex queries to retrieval_agent."
     ),
     tools=[
         escalate_to_human,

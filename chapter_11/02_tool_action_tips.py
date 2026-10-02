@@ -14,7 +14,6 @@ def lookup_order(order_id: str) -> dict:
     if not order_id.startswith("ORD-"):
         raise ValueError("Invalid order id format")
     return {"status": "shipped", "eta_days": 3}
-    return {"status": "shipped", "eta_days": 3}
 
 
 tooling_agent = Agent(
