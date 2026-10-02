@@ -124,7 +124,7 @@ follow_up_questions drive tactical execution.
 When you believe you have sufficient information to answer
 the research goal comprehensively, set goal_satisfied to true.
 """,
-    model="gpt-4o",
+    model="gpt-5.1",
     output_type=ResearchIteration,
 )
 
@@ -142,7 +142,7 @@ and note any gaps or limitations in the research.
 Mark any plan sub-topics that were not fully completed
 as gaps in your report.
 """,
-    model="gpt-4o",
+    model="gpt-5.1",
     output_type=ResearchReport,
 )
 

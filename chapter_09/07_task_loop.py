@@ -78,7 +78,7 @@ and transformation instructions, read the file,
 apply the transformation, and write the result.
 Report success or failure for each task.
 """,
-    model="gpt-4o",
+    model="gpt-5.1",
     output_type=TaskResult,
 )
 
