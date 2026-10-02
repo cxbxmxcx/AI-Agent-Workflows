@@ -175,3 +175,9 @@ cython_debug/
 
 # generated images
 gen_images/
+
+# Publisher review documents (kept local, not part of the book code)
+Source code defect report*.docx
+
+# Microsoft Office lock files
+~$*
