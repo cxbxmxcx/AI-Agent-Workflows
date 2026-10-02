@@ -179,6 +179,9 @@ gen_images copy/
 out.png
 donut_top_left*
 
+# Chapter 6 vector store, built by 02_RAG_agent_vector.py (Chroma rewrites it on every open)
+chapter_06/chroma_script_store/
+
 # Chapter 9 task loop: keep the sample inputs, ignore what the agent writes
 chapter_09/workspace/*
 !chapter_09/workspace/meeting_notes.txt

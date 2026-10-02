@@ -10,8 +10,9 @@ async def main():
         name="memory",
         params={
             "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-memory@latest"],
+            "args": ["-y", "@modelcontextprotocol/server-memory@2026.8.31"],
         },
+        client_session_timeout_seconds=60,
     )
 
     instructions = """
