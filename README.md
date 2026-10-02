@@ -125,3 +125,4 @@ The exercises at the end of each chapter are open-ended, and there is no officia
 
 - Ensure you are using the correct Python interpreter that matches your environment.
 - The `.env` file should not be shared or committed to version control to keep your API key secure.
+- [ERRATA.md](ERRATA.md) lists the corrections made since the first printing, and `python tools/check_repo.py` checks a copy of the repository for each of them.

@@ -344,8 +344,8 @@ def check_mcp_launches(trees, report):
 
 def check_text(files, report):
     for path in files:
-        if path.suffix not in TEXT_SUFFIXES or rel(path).startswith("tools/"):
-            continue
+        if path.suffix not in TEXT_SUFFIXES or rel(path).startswith("tools/") or rel(path) == "ERRATA.md":
+            continue  # ERRATA.md quotes the old typos on purpose
         text = read_text(path)
         for word in TYPOS_IN_TEXT:
             for m in re.finditer(re.escape(word), text):
