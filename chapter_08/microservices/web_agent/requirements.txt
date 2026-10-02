@@ -1,6 +1,6 @@
-fastapi>=0.95.0
-uvicorn[standard]>=0.23.0
-openai-agents>=0.0.19
-openai>=1.90.0
-python-dotenv>=1.0.0
-pydantic>=1.10.0
+fastapi==0.142.2
+uvicorn[standard]==0.54.0
+openai-agents==0.23.1
+openai==3.24.0
+python-dotenv==1.2.4
+pydantic==2.13.5

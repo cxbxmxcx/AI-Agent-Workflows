@@ -102,7 +102,7 @@ python tools/check_repo.py --servers
 
 ## Repository Layout
 
-- `chapter_02` to `chapter_11`: the code for each chapter of the book.
+- `chapter_02` to `chapter_11`: the code for each chapter of the book. `chapter_08/microservices/` holds the Docker Compose deployment of listing 8.5.
 - `bonus_projects/`: extra examples that go beyond the book.
 - `extras/`: material that is not part of the book: `demo_project/`, a demo sequence built from the chapter 2 to 6 examples, and `chapter_12/`, an Agent2Agent (A2A) client sketch.
 - `tools/check_repo.py`: checks the repository for known problems and downloads the MCP servers ahead of time.

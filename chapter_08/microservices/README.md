@@ -1,8 +1,12 @@
 # Realtime Voice Agent (v3) — Image + Web Search tools
 
+This folder holds the Docker Compose deployment shown in listing 8.5 and figure 8.6. It was previously published separately as `cxbxmxcx/Agents-microservices`.
+
 This version adds a **Web Search Agent** container built with the OpenAI **Agents SDK** and exposes it to the UI as a **tool**.
 
 ## Run
+
+Run these commands from this folder (`chapter_08/microservices`). Docker Compose reads `OPENAI_API_KEY` from the `.env` file here, not from the one in the repository root.
 
 ```bash
 cp .env.example .env
