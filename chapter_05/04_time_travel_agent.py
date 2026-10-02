@@ -17,7 +17,7 @@ def travel_back(year: int, years: int) -> str:
 def travel_forward(year: int, years: int) -> str:
     """Travel forward in time by a given number of years from the start year."""
     print(f"Time travel forward by {years} years")
-    return f"Current year in time: {year - years}"
+    return f"Current year in time: {year + years}"
 
 
 async def main():
@@ -51,7 +51,7 @@ to witness a famous historical event that took place 125 years ago,
 which lasted for 10 days. He arrives three days before the event starts.
 However, after spending six days in the past, he jumps forward in time
 by 50 years and stays there for 20 days. Then, he travels back to
-witness the end of the end. Alex current year is 2050.
+witness the end of the event. Alex current year is 2050.
 How many days does Alex spend in the past before he sees the end of the event?
 """
         print("Running...")

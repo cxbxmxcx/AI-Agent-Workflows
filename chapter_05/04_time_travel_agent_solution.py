@@ -17,7 +17,7 @@ def travel_back(year: int, years: int) -> str:
 def travel_forward(year: int, years: int) -> str:
     """Travel forward in time by a given number of years from the start year."""
     print(f"Time travel forward by {years} years")
-    return f"Current year in time: {year - years}"
+    return f"Current year in time: {year + years}"
 
 
 @function_tool
@@ -51,7 +51,7 @@ You have tools 'travel_back' and 'travel_forward' to perform time jumps.
 First, think step-by-step about the problem to devise a plan.
 You must use the tools to calculate dates. 
 After using a tool, reflect on the result and continue reasoning. 
-Consider braching out your reasoning into multiple branches if necessary.
+Consider branching out your reasoning into multiple branches if necessary.
 Execute and consider each branch step-by-step.
 Check the answer is correct using 'how_correct_is_answer' tool.
 If the answer is correct (0 days) provide the final answer and plan.
@@ -76,7 +76,7 @@ to witness a famous historical event that took place 125 years ago,
 which lasted for 10 days. He arrives three days before the event starts.
 However, after spending six days in the past, he jumps forward in time
 by 50 years and stays there for 20 days. Then, he travels back to
-witness the end of the end. Alex current year is 2050.
+witness the end of the event. Alex current year is 2050.
 How many days does Alex spend in the past before he sees the end of the event?
 """
         print("Running...")
