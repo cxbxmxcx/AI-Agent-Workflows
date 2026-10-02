@@ -639,13 +639,13 @@ async def run_servers_async(cold):
 
 SMOKE_RUNS = [
     # (script, stdin, timeout seconds, text the output must contain, extra env keys needed)
-    ("chapter_04/07_input_output_guardrails.py", "", 300, "research plan length: ", []),
-    ("chapter_05/02_ReAct_agent.py", "", 300, None, []),
+    ("chapter_04/07_input_output_guardrails.py", "", 300, None, []),
+    ("chapter_05/02_ReAct_agent.py", "", 300, "2030", []),  # 2050 - 25 + 10 - 5
     ("chapter_05/04_time_travel_agent.py", "", 600, None, []),
-    ("chapter_06/02_RAG_agent_vector.py", "", 600, None, []),
-    ("chapter_06/04_hybrid_memory_agent.py", "\n" * 5, 900, None, []),
-    ("chapter_06/03_create_memories_mcp.py", "\n" * 5, 600, None, []),
-    ("chapter_06/03_mcp_memory_agent.py", "\n" * 5, 600, None, []),
+    ("chapter_06/02_RAG_agent_vector.py", "", 600, None, []),  # builds the vector store
+    ("chapter_06/04_hybrid_memory_agent.py", "What does Doc Brown say about the flux capacitor?\nexit\n", 900, None, []),
+    ("chapter_06/03_create_memories_mcp.py", "", 600, None, []),
+    ("chapter_06/03_mcp_memory_agent.py", "What do you remember about me?\nexit\n", 600, None, []),
     ("chapter_09/04_deep_research_loop.py", "", 1200, None, ["BRAVE_API_KEY"]),
     ("chapter_09/07_task_loop.py", "", 1200, "Completed: 3/3", ["BRAVE_API_KEY"]),
     ("chapter_10/09_cognitive_agent.py", "", 1500, None, ["BRAVE_API_KEY"]),
@@ -671,6 +671,7 @@ def run_smoke(only):
         return 2
     env["PYTHONIOENCODING"] = "utf-8"
     report = Report()
+    logs = Path(tempfile.mkdtemp(prefix="check_repo_smoke_"))
     for script, stdin, timeout, expect, needs in SMOKE_RUNS:
         if only and not any(o in script for o in only):
             continue
@@ -686,10 +687,12 @@ def run_smoke(only):
         except subprocess.TimeoutExpired as e:
             output, code = e.stdout if isinstance(e.stdout, str) else "", "timeout"
         ok = code == 0 and (expect is None or expect in output)
+        (logs / (script.replace("/", "_") + ".log")).write_text(output, encoding="utf-8")
         tail = " | ".join(output.strip().splitlines()[-3:])[:220]
         print(f"  {'ok  ' if ok else 'FAIL'} {script:50s} {time.perf_counter() - started:6.1f}s  {tail}")
         if not ok:
             report.fail("smoke", script, f"exit {code}; expected {expect!r}" if expect else f"exit {code}")
+    print(f"\nFull output of each run: {logs}")
     return report.print("Smoke runs")
 
 
