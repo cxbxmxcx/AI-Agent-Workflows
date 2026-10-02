@@ -390,15 +390,13 @@ def normalize(dist):
 
 
 def check_requirements(files, trees, report):
-    req_files = [f for f in files if f.name == "requirements.txt"]
-    root_names = set()
-    for req in req_files:
+    declared = defaultdict(set)  # folder -> distributions its requirements.txt declares
+    for req in (f for f in files if f.name == "requirements.txt"):
         for line in requirement_lines(req):
             if "==" not in line:
                 report.fail("M-05", rel(req), f"{line!r} is not pinned with ==")
             name = normalize(re.split(r"[\[=<>!~ ;]", line, 1)[0])
-            if req.parent == ROOT:
-                root_names.add(name)
+            declared[req.parent].add(name)
             if name == "mcp":
                 m = re.search(r"==\s*(\d+)", line)
                 if m and int(m.group(1)) >= 2:
@@ -406,6 +404,10 @@ def check_requirements(files, trees, report):
     local = {p.stem for p in trees} | {p.name for p in ROOT.iterdir() if p.is_dir()}
     missing = defaultdict(set)
     for path, tree in trees.items():
+        # The root requirements cover every example; a service with its own requirements.txt
+        # (the chapter 8 Docker images) may declare more.
+        nearest = next((d for d in path.parents if d in declared), ROOT)
+        root_names = declared[ROOT] | declared[nearest]
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 names = [a.name for a in node.names]
