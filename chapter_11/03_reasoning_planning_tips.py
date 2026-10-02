@@ -10,8 +10,9 @@ thinking_srv = MCPServerStdio(
     name="sequential-thinking",
     params={
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2026.8.31"],
     },
+    client_session_timeout_seconds=60,
 )
 
 

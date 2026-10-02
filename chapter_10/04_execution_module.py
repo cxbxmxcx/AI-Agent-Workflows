@@ -17,8 +17,9 @@ search_server = MCPServerStdio(
     name="Filesystem",
     params={
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-filesystem", "./docs"],
+        "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", "./docs"],
     },
+    client_session_timeout_seconds=60,
 )
 
 

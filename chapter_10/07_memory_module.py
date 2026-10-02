@@ -6,8 +6,9 @@ memory_server = MCPServerStdio(
     name="Memory",
     params={
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-memory"],
+        "args": ["-y", "@modelcontextprotocol/server-memory@2026.8.31"],
     },
+    client_session_timeout_seconds=60,
 )
 
 memory_agent = Agent(
