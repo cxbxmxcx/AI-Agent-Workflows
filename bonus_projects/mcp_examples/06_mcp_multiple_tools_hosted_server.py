@@ -14,8 +14,9 @@ async def list_directory() -> str:
         name="filesystem",
         params={
             "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
+            "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", SANDBOX],
         },
+        client_session_timeout_seconds=60,
     ) as fs:
         res = await fs.call_tool("list_directory", {"path": SANDBOX})
         return res.content[0].text  # assume res.content is a list of Text objects
@@ -28,8 +29,9 @@ async def read_file(path: str) -> str:
         name="filesystem",
         params={
             "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
+            "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", SANDBOX],
         },
+        client_session_timeout_seconds=60,
     ) as fs:
         result = await fs.call_tool("read_file", {"path": os.path.join(SANDBOX, path)})
         return result.content[0].text  # assume res.content is a list of Text objects

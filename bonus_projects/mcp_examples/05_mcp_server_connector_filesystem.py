@@ -15,9 +15,10 @@ async def main():
         params={
             "command": "npx",
             "args": ["-y", 
-                     "@modelcontextprotocol/server-filesystem", 
+                     "@modelcontextprotocol/server-filesystem@2026.8.31", 
                      current_dir],
         },
+        client_session_timeout_seconds=60,
     ) as server:        
         # List tools provided by the MCP server
         tools = await server.list_tools()

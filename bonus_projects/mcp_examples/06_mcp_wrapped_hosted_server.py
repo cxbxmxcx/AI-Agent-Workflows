@@ -15,8 +15,9 @@ async def list_directory() -> str:
         name="filesystem",
         params={
             "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
+            "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", SANDBOX],
         },
+        client_session_timeout_seconds=60,
     ) as fs:
         res = await fs.call_tool(
             "list_directory", 
