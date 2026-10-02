@@ -324,8 +324,7 @@
   -H "Authorization: Bearer $env:OPENAI_API_KEY" ^
   -H "Content-Type: application/json" ^
   -d "{ ""model"": ""gpt-4o-realtime-preview-2025-06-03"" }" | jq -r ".client_secret.value"</pre>
-            <div>Docs: Realtime voice agents; MCP in Agents SDK (hosted / streamable HTTP / stdio).
-                :contentReference[oaicite:3]{index=3}</div>
+            <div>Docs: Realtime voice agents; MCP in Agents SDK (hosted / streamable HTTP / stdio).</div>
         </footer>
 
     </div>
@@ -356,7 +355,7 @@
         const agent = new RealtimeAgent({
             name: 'Assistant',
             instructions: 'You are a helpful, concise voice assistant. Use tools when useful; otherwise answer directly.',
-            // We will attach MCP servers here before connecting the session. :contentReference[oaicite:4]{index=4}
+            // We will attach MCP servers here before connecting the session.
         });
 
         let session = null;
@@ -382,7 +381,7 @@
                 tokenInput.focus(); tokenInput.placeholder = 'Paste a valid ephemeral client key'; return;
             }
 
-            // Optional MCP hookup (Streamable HTTP). Hosted MCP is for the Responses API, not Realtime. :contentReference[oaicite:5]{index=5}
+            // Optional MCP hookup (Streamable HTTP). Hosted MCP is for the Responses API, not Realtime.
             const mcpUrl = mcpUrlInput.value.trim();
             const mcpBearer = mcpBearerInput.value.trim();
 
@@ -392,7 +391,7 @@
                     mcpServer = new MCPServerStreamableHttp({
                         url: mcpUrl,
                         name: 'External MCP',
-                        // Cache tool list to avoid list_tools on every turn; invalidate via mcpServer.invalidateToolsCache() if needed. :contentReference[oaicite:6]{index=6}
+                        // Cache tool list to avoid list_tools on every turn; invalidate via mcpServer.invalidateToolsCache() if needed.
                         cacheToolsList: true,
                         // Customize the fetch/init if your server needs CORS headers or auth.
                         requestInit: {
@@ -401,7 +400,7 @@
                         }
                     });
                     await mcpServer.connect();
-                    agent.mcpServers = [mcpServer]; // attach before creating the session. :contentReference[oaicite:7]{index=7}
+                    agent.mcpServers = [mcpServer]; // attach before creating the session.
                 }
 
                 // Build the Realtime session (prompts for mic; handles audio I/O).
@@ -418,7 +417,7 @@
                 session.on('audio_start', () => setStatus('speaking…', 'ok'));
                 session.on('audio_stopped', () => setStatus('connected', 'ok'));
                 session.on('tool_approval_requested', (item) => {
-                    // Optional: implement a HITL approval UI. You can call session.approve(item) or session.reject(item). :contentReference[oaicite:8]{index=8}
+                    // Optional: implement a HITL approval UI. You can call session.approve(item) or session.reject(item).
                     addMsg('sys', `Tool approval requested: ${item.rawItem?.name || 'unknown tool'}`);
                 });
                 session.on('error', (err) => { console.error(err); setStatus(err?.message || 'error', 'err'); addMsg('sys', `Error: ${err?.message || String(err)}`); });
@@ -462,7 +461,7 @@
         });
 
         addMsg('sys', 'Paste ephemeral key. Optional: add MCP URL (Streamable HTTP). Then click “Connect mic”.');
-        addMsg('sys', 'Tip: try the public GitMCP docs server in the MCP URL field, then ask about a repo. :contentReference[oaicite:9]{index=9}');
+        addMsg('sys', 'Tip: try the public GitMCP docs server in the MCP URL field, then ask about a repo.');
     </script>
 </body>
 

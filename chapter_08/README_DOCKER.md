@@ -1,5 +1,7 @@
 # Image Generator API — Docker instructions
 
+> The multi-container deployment of listing 8.5 (web UI, image agent and web search agent under Docker Compose) is in [`microservices/`](microservices/README.md). This page covers the single image-generator container.
+
 This project contains a FastAPI app at `02_app.py`.
 The Dockerfile below builds a container that runs the app with Uvicorn.
 

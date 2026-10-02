@@ -60,7 +60,7 @@ and suggest next steps for the team.
 Set agrees_goal_met to true only if you believe the research
 goal is comprehensively answered.
 """,
-    model="gpt-4o",
+    model="gpt-5.1",
     output_type=Contribution,
 )
 
@@ -77,7 +77,7 @@ Be constructive but rigorous. Set agrees_goal_met to true only
 if you believe the collective findings are strong, well-sourced,
 and comprehensive enough to answer the goal.
 """,
-    model="gpt-4o",
+    model="gpt-5.1",
     output_type=Contribution,
 )
 
@@ -94,7 +94,7 @@ comprehensively answers the research goal.
 Your confidence score should reflect how complete and
 well-supported the synthesis is.
 """,
-    model="gpt-4o",
+    model="gpt-5.1",
     output_type=Contribution,
 )
 
@@ -110,9 +110,10 @@ async def run_collaboration_loop(
         name="Brave Search",
         params={
             "command": "npx",
-            "args": ["-y", "@anthropic/brave-search-mcp"],
+            "args": ["-y", "@brave/brave-search-mcp-server@2.1.4"],
             "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
         },
+        client_session_timeout_seconds=60,
     )
     async with search_server:
         agents[0] = researcher_agent.clone(

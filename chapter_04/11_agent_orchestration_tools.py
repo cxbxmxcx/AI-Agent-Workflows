@@ -21,15 +21,17 @@ thinking_srv = MCPServerStdio(
     name="sequential-thinking",
     params={
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2026.8.31"],
     },
+    client_session_timeout_seconds=60,
 )
 fs_srv = MCPServerStdio(
     name="filesystem",
     params={
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
+        "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", SANDBOX],
     },
+    client_session_timeout_seconds=60,
 )
 
 
@@ -68,7 +70,7 @@ async def filesystem_agent(instructions: str) -> str:
         instructions="""
 You are a filesystem assistant.
 Your role is to read and write files.
-Never make up or invent any ouput.
+Never make up or invent any output.
 """,
         mcp_servers=[fs_srv],
     )

@@ -30,7 +30,7 @@ react_agent = Agent(
 
 # A time travel problem that requires using the tools
 problem = (
-    "I am in the year 2050."
+    "I am in the year 2050. "
     "I travel 25 years back in time, then travel 10 years forward, "
     "and finally go 5 years back again. What year is it now?"
 )

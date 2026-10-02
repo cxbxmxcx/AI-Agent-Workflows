@@ -37,7 +37,7 @@ to witness a famous historical event that took place 100 years ago,
 which lasted for 10 days. He arrives three days before the event starts.
 However, after spending six days in the past, he jumps forward in time
 by 50 years and stays there for 20 days. Then, he travels back to
-witness the end of the end. 
+witness the end of the event. 
 How many days does Alex spend in the past before he sees the end of the event?
 """
 TARGET_DAYS = "26"  # expected final answer

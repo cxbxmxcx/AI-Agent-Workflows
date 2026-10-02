@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  web:
+    build: ./web
+    container_name: realtime-voice-web
+    ports: ["8000:8000"]
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      DEFAULT_MODEL: ${DEFAULT_MODEL:-gpt-4o-realtime-preview-2025-06-03}
+      DEFAULT_VOICE: ${DEFAULT_VOICE:-alloy}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+    depends_on:
+      - image_agent
+      - web_agent
+
+  image_agent:
+    build: ./image_agent
+    container_name: realtime-image-agent
+    ports: ["8001:8000"]
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+  web_agent:
+    build: ./web_agent
+    container_name: realtime-web-agent
+    ports: ["8002:8000"]
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      WEB_AGENT_MODEL: ${WEB_AGENT_MODEL:-gpt-5-mini}

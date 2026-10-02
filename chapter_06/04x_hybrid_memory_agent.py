@@ -9,15 +9,22 @@ async def main():
         name="memory",
         params={
             "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-memory@latest"],
+            "args": ["-y", "@modelcontextprotocol/server-memory@2026.8.31"],
         },
+        client_session_timeout_seconds=60,
     )
     chroma_srv = MCPServerStdio(
         name="chroma",
         params={
             "command": "uvx",
-            "args": ["chroma-mcp", "--data-dir", "chapter_06/chroma_script_store"],
+            "args": [
+                "--with", "chromadb==1.5.9",
+                "chroma-mcp@0.2.6",
+                "--client-type", "persistent",
+                "--data-dir", "chapter_06/chroma_script_store",
+            ],
         },
+        client_session_timeout_seconds=300,
     )
 
     instructions = """

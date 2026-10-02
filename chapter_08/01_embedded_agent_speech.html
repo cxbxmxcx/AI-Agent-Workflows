@@ -320,7 +320,7 @@
   -H "Content-Type: application/json" \
   -d '{ "model": "gpt-4o-realtime-preview-2025-06-03" }' | jq -r '.client_secret.value'</pre>
             <div>This follows the official Voice Agents quickstart for browser Realtime sessions. In production, mint
-                the key on your backend. :contentReference[oaicite:4]{index=4}</div>
+                the key on your backend.</div>
         </footer>
 
     </div>
@@ -408,17 +408,17 @@
             session = new RealtimeSession(agent, {
                 model: modelSel.value,
                 // Session config: we’ll let the API do VAD + STT for us.
-                // (See docs: session config & turn detection) :contentReference[oaicite:5]{index=5}
+                // (See docs: session config & turn detection)
                 config: {
                     inputAudioTranscription: { model: 'gpt-4o-mini-transcribe' },
                     turnDetection: { type: 'semantic_vad', eagerness: 'medium', createResponse: true, interruptResponse: true },
                 },
                 // Pass provider-specific fields (e.g., voice) straight through to Realtime "session"
-                // (Docs: unknown/new fields go via providerData) :contentReference[oaicite:6]{index=6}
+                // (Docs: unknown/new fields go via providerData)
                 providerData: { voice: voiceSel.value },
             });
 
-            // Events (Docs: RealtimeSession emits history_updated, tool_approval_requested, guardrail_tripped, etc.) :contentReference[oaicite:7]{index=7}
+            // Events (Docs: RealtimeSession emits history_updated, tool_approval_requested, guardrail_tripped, etc.)
             session.on('history_updated', (history) => renderHistory(history));
             session.on('audio_start', () => setStatus('speaking…', 'ok'));
             session.on('audio_stopped', () => setStatus('connected', 'ok'));
@@ -430,7 +430,7 @@
 
             try {
                 setStatus('connecting…');
-                // Connect over WebRTC; SDK asks for mic + sets up speaker output automatically. :contentReference[oaicite:8]{index=8}
+                // Connect over WebRTC; SDK asks for mic + sets up speaker output automatically.
                 await session.connect({ apiKey });
                 addMsg('sys', 'Connected. You can speak now. Type as well if you like.');
                 setStatus('connected', 'ok');
@@ -462,7 +462,7 @@
         });
 
         stopBtn.addEventListener('click', () => {
-            // Interrupts current assistant speech / generation (per docs). :contentReference[oaicite:9]{index=9}
+            // Interrupts current assistant speech / generation (per docs).
             if (session) session.interrupt();
         });
 

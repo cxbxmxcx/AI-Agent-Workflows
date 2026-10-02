@@ -1,8 +1,11 @@
 import asyncio
 import os
+from pathlib import Path
 from pydantic import BaseModel, Field
 from agents import Agent, Runner
 from agents.mcp import MCPServerStdio
+
+WORKSPACE = Path(__file__).parent / "workspace"
 
 
 class TaskItem(BaseModel):
@@ -75,7 +78,7 @@ and transformation instructions, read the file,
 apply the transformation, and write the result.
 Report success or failure for each task.
 """,
-    model="gpt-4o",
+    model="gpt-5.1",
     output_type=TaskResult,
 )
 
@@ -83,24 +86,27 @@ Report success or failure for each task.
 async def run_task_loop(
     tasks: list[dict], max_retries: int = 3
 ) -> TaskState:
+    WORKSPACE.mkdir(exist_ok=True)  # the server refuses a missing directory
     filesystem_server = MCPServerStdio(
         name="Filesystem",
         params={
             "command": "npx",
             "args": [
                 "-y",
-                "@anthropic/filesystem-mcp",
-                os.path.abspath("./workspace"),
+                "@modelcontextprotocol/server-filesystem@2026.8.31",
+                str(WORKSPACE),
             ],
         },
+        client_session_timeout_seconds=60,
     )
     search_server = MCPServerStdio(
         name="Brave Search",
         params={
             "command": "npx",
-            "args": ["-y", "@anthropic/brave-search-mcp"],
-            "env": {"BRAVE_API_KEY": os.environ.get("BRAVE_API_KEY", "")},
+            "args": ["-y", "@brave/brave-search-mcp-server@2.1.4"],
+            "env": {"BRAVE_API_KEY": os.environ["BRAVE_API_KEY"]},
         },
+        client_session_timeout_seconds=60,
     )
 
     async with filesystem_server, search_server:
@@ -159,17 +165,17 @@ async def main():
         {
             "id": "doc-001",
             "description": "Summarize the meeting notes",
-            "input_data": {"file": "meeting_notes.txt"},
+            "input_data": {"file": str(WORKSPACE / "meeting_notes.txt")},
         },
         {
             "id": "doc-002",
             "description": "Extract action items from the report",
-            "input_data": {"file": "quarterly_report.txt"},
+            "input_data": {"file": str(WORKSPACE / "quarterly_report.txt")},
         },
         {
             "id": "doc-003",
             "description": "Translate the readme to Spanish",
-            "input_data": {"file": "README.md"},
+            "input_data": {"file": str(WORKSPACE / "README.md")},
         },
     ]
     state = await run_task_loop(tasks)

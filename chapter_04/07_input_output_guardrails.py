@@ -55,7 +55,7 @@ async def research_output_guardrail(
         insufficient_research = False
 
     return GuardrailFunctionOutput(
-        output_info="research plan length: {len(output.research_plan)}",
+        output_info=f"research plan length: {len(output.research_plan)}",
         tripwire_triggered=insufficient_research,
     )
 
@@ -74,15 +74,17 @@ async def main():
             name="sequential-thinking",
             params={
                 "command": "npx",
-                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2026.8.31"],
             },
+            client_session_timeout_seconds=60,
         ),
         MCPServerStdio(
             name="filesystem",
             params={
                 "command": "npx",
-                "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
+                "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", SANDBOX],
             },
+            client_session_timeout_seconds=60,
         ),
     ]
 

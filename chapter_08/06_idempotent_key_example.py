@@ -1,4 +1,4 @@
-# chapter_08/08_idempotent_tool_inputs.py
+# chapter_08/06_idempotent_key_example.py
 import asyncio
 import hashlib
 import json

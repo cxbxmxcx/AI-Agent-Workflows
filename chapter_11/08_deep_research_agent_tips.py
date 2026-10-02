@@ -27,11 +27,6 @@ researcher = Agent(
     ],
 )
 
-# Stream results to your UI
-stream = Runner.run_streamed(
-    researcher, "Map the 3 best open RAG rerankers and compare."
-)
-
 
 async def main():
     result = Runner.run_streamed(

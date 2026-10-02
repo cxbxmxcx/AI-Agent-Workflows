@@ -54,14 +54,14 @@ def get_research_sources() -> list[str]:
     return search_sources   
 
 @function_tool
-def get_resource_url(research_soruce: str) -> str:
+def get_resource_url(research_source: str) -> str:
     """Provides a url for the research source."""
     search_sources = {
         "Wikipedia": "https://www.wikipedia.org",
         "Google": "https://www.google.com",
         "YouTube": "https://www.youtube.com",
     }
-    return search_sources[research_soruce] 
+    return search_sources[research_source] 
     
 agent = Agent(
     name="Research Planner", 

@@ -96,7 +96,7 @@ async def main():
         ],
     )
 
-    class CritqueImage(BaseModel):
+    class CritiqueImage(BaseModel):
         """Result of critiquing image."""
 
         image_pass: bool
@@ -112,7 +112,7 @@ based on the provided specific criteria and style guidelines.
 """,
         model="gpt-5-mini",  # Specify the model to use
         tools=[describe_image],
-        output_type=CritqueImage,
+        output_type=CritiqueImage,
     )
 
     image_description = "an agent generating an image"

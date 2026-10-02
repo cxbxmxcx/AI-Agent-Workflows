@@ -38,7 +38,7 @@ Your role is to plan the research.
         instructions="""
 You are a filesystem assistant.
 Your role is to write the output as a text file.
-Never make up or invent any ouput.
+Never make up or invent any output.
 """,
     )
     # Instantiate the servers next…
@@ -54,15 +54,17 @@ Never make up or invent any ouput.
             name="sequential-thinking",
             params={
                 "command": "npx",
-                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2026.8.31"],
             },
+            client_session_timeout_seconds=60,
         ),
         MCPServerStdio(
             name="filesystem",
             params={
                 "command": "npx",
-                "args": ["-y", "@modelcontextprotocol/server-filesystem", SANDBOX],
+                "args": ["-y", "@modelcontextprotocol/server-filesystem@2026.8.31", SANDBOX],
             },
+            client_session_timeout_seconds=60,
         ),
     ]
 

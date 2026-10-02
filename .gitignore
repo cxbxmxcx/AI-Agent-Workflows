@@ -175,3 +175,27 @@ cython_debug/
 
 # generated images
 gen_images/
+gen_images copy/
+out.png
+donut_top_left*
+
+# Chapter 6 vector store, built by 02_RAG_agent_vector.py (Chroma rewrites it on every open)
+chapter_06/chroma_script_store/
+
+# Chapter 9 task loop: keep the sample inputs, ignore what the agent writes
+chapter_09/workspace/*
+!chapter_09/workspace/meeting_notes.txt
+!chapter_09/workspace/quarterly_report.txt
+!chapter_09/workspace/README.md
+
+# Not book material: presentations, scratch graphs, local tool settings
+*.pptx
+Source.gv
+Source.gv.pdf
+**/.claude/settings.local.json
+
+# Publisher review documents (kept local, not part of the book code)
+Source code defect report*.docx
+
+# Microsoft Office lock files
+~$*

@@ -4,7 +4,7 @@ Day 1: Explore OpenAI HQ and AI exhibits at Exploratorium
 Day 2: Visit Stanford AI Lab and Palo Alto innovation hubs
 Day 3: Attend tech meetups, tour AI startups in SoMa
 
-However, the Exploratorium is closed the first and we there is no startups to tour. 
+However, the Exploratorium is closed on the first day and there are no startups to tour. 
 Update my itinerary.
 
 Assistant/LLM: 

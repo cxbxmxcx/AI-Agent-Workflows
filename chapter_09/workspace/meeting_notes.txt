@@ -1,0 +1,22 @@
+Weekly product sync, Tuesday 10:00
+
+Attendees: Dana (product), Luis (engineering), Priya (design), Sam (support)
+
+1. Release 2.4
+   - The export feature passed QA on Monday. Two minor UI bugs remain open.
+   - Luis expects both fixes by Thursday; the release moves to Friday if they slip.
+
+2. Customer feedback
+   - Sam reported 14 tickets this week asking for CSV export with custom columns.
+   - Dana agreed to scope custom columns for release 2.5.
+
+3. Onboarding redesign
+   - Priya shared the new onboarding flow. The team liked the shorter sign-up form.
+   - Concern: the new flow removes the tutorial video that 30% of new users watch.
+   - Decision: keep the video as an optional step and test both versions.
+
+Action items
+- Luis: fix the two open UI bugs by Thursday.
+- Dana: write the custom-columns proposal before next sync.
+- Priya: prepare the A/B test plan for the onboarding flow.
+- Sam: tag all CSV export tickets so they can be counted for the proposal.

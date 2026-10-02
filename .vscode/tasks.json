@@ -3,8 +3,9 @@
     "tasks": [
         {
             "label": "Install requirements",
-            "type": "shell",
-            "command": "${command:python.interpreterPath} -m pip install --upgrade --upgrade-strategy eager -r requirements.txt",
+            "type": "process",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "--disable-pip-version-check", "-r", "requirements.txt"],
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"

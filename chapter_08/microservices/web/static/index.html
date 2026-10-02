@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Realtime Voice Agent — Image + Web Search Tools</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="/static/favicon.svg" />
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#0f172a; --panel-2:#0c1326; --text:#e5e7eb; --muted:#a3a9b6;
+      --success:#22c55e; --danger:#ef4444; --chip:#121b34; --border:#1f2b44; --accent:#6ea8ff;
+    }
+    html,body{height:100%;margin:0;background:
+      radial-gradient(1200px 500px at 20% -10%, rgba(47,111,236,.25), transparent 60%),
+      radial-gradient(900px 600px at 120% 20%, rgba(110,168,255,.18), transparent 60%),
+      var(--bg); color:var(--text); font: 15px/1.5 Inter, ui-sans-serif, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
+    .wrap{max-width:1180px;margin:0 auto;padding:20px;}
+
+    header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);padding:14px 14px 12px;}
+    .pill{padding:4px 8px;border-radius:999px;background:#121b34;border:1px solid var(--border);color:var(--muted);}
+    header select, header input[type="text"]{background:#0b1429;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 12px;min-width:220px;}
+    header button{border:1px solid #3457d3;background:linear-gradient(180deg,#3d66f0,#244ecb);color:#fff;border-radius:12px;padding:10px 14px;cursor:pointer;box-shadow: inset 0 1px 0 rgba(255,255,255,.15)}
+    header button.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .status{margin-left:auto;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--muted)}
+    .status .dot{width:10px;height:10px;border-radius:50%;background:#6b7280}
+    .status.ok .dot{background:var(--success)}
+    .status.err .dot{background:var(--danger)}
+    .hint{width:100%;color:var(--muted);margin-top:-4px}
+
+    /* --- Main split layout: chat (left) + tools (right) --- */
+    .main{display:flex;gap:14px;margin-top:14px}
+    .col-chat{flex:1;min-width:0}
+    .col-tools{width:340px}
+    @media (max-width: 980px){
+      .main{flex-direction:column}
+      .col-tools{width:auto}
+    }
+
+    .chat{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);padding:14px;height:56vh;overflow:auto}
+    .msg{padding:12px 14px;margin:10px 0;border-radius:12px;max-width:78%;white-space:pre-wrap;border:1px solid var(--border)}
+    .msg.user{margin-left:auto;background:#1b2a4a}
+    .msg.assistant{background:#112035}
+    .msg.sys{background:#0f1a2e;font-style:italic;color:var(--muted)}
+    .msg.assistant.image{padding:6px}
+    .msg.assistant.image img{max-width:100%;border-radius:8px;display:block}
+    .msg.assistant.image figcaption{font-size:12px;color:var(--muted);padding:4px 6px 2px}
+
+    .composer{display:flex;gap:10px;margin-top:10px}
+    .composer input{flex:1;background:#0b1429;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+    .composer button{border:1px solid var(--border);background:#0d1730;color:var(--text);border-radius:10px;padding:12px 16px;cursor:pointer}
+
+    /* === Tool activity pane === */
+    .tools{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);padding:12px;height:56vh;display:flex;flex-direction:column}
+    .tools header{display:flex;align-items:center;gap:8px;background:transparent;border:none;box-shadow:none;padding:0;margin-bottom:6px}
+    .tools h3{margin:0;font-size:14px;color:#cbd5e1}
+    .tools .spacer{flex:1}
+    .tools .count{font-size:12px; padding:3px 8px; border-radius:999px; background:#0b1429; border:1px solid var(--border); color:#cbd5e1}
+    .tools .btn-subtle{border:1px solid var(--border);background:#0d1730;color:var(--text);border-radius:8px;padding:6px 10px;cursor:pointer}
+    .tools .btn-subtle:hover{background:#0f1b36}
+    .tools .list{flex:1;overflow:auto;padding-right:6px}
+
+    .tool-run{position:relative;background:#0d1730;border:1px solid var(--border);border-radius:10px;padding:10px;margin:8px 0}
+    .tool-run .row{display:flex;align-items:center;gap:8px}
+    .tool-run .name{font-weight:700}
+    .tool-run .status{margin-left:auto;font-weight:600;color:#93c5fd}
+    .tool-run.done .status{color:#22c55e}
+    .tool-run.err .status{color:#ef4444}
+    .dot.spinner{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(110,168,255, 0.7);animation: ping 1.2s infinite}
+    @keyframes ping{0%{box-shadow:0 0 0 0 rgba(110,168,255,0.7)}70%{box-shadow:0 0 0 10px rgba(110,168,255,0)}100%{box-shadow:0 0 0 0 rgba(110,168,255,0)}}
+    .tool-run .meta{margin-top:6px;color:var(--muted);font-size:12px}
+
+    /* cancel button */
+    .tool-run .kill{position:absolute;top:8px;right:8px;border:1px solid var(--border);background:#0b1429;color:#cbd5e1;border-radius:6px;padding:2px 6px;cursor:pointer;font-size:12px}
+    .tool-run .kill:hover{background:#0f1b36}
+
+    /* Hover tooltip with JSON params */
+    .tool-run .tool-tip{position:absolute;right:10px;top:36px;z-index:10;pointer-events:none;opacity:0;transition:opacity .12s ease}
+    .tool-run:hover .tool-tip{opacity:1}
+    .tool-run .tool-tip .box{max-width:300px;background:#0b1429;border:1px solid var(--border);border-radius:10px;padding:10px;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+    .tool-run .tool-tip pre{margin:0;color:#cbd5e1;font-size:12px;white-space:pre-wrap;word-break:break-word}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="row" style="display:flex;gap:8px;align-items:center;">
+        <label class="pill">Model</label>
+        <select id="model"><option value="gpt-4o-realtime-preview-2025-06-03">gpt-4o-realtime-preview-2025-06-03</option></select>
+        <label class="pill">Voice</label>
+        <select id="voice"><option>alloy</option><option>verse</option><option>aria</option></select>
+        <label class="pill">Image API</label>
+        <input id="imgApiBase" type="text" placeholder="http://localhost:8001" />
+        <label class="pill">Search API</label>
+        <input id="searchApiBase" type="text" placeholder="http://localhost:8002" />
+      </div>
+      <button id="connectBtn">🎤 Connect mic</button>
+      <button id="disconnectBtn" class="secondary" disabled>Disconnect</button>
+      <div id="status" class="status"><span class="dot"></span><span class="txt">idle</span></div>
+      <div class="hint">Click “Connect mic”. Try: <code>/image neon robot</code> or <code>/search latest on lunar ice</code>.</div>
+    </header>
+
+    <div class="main">
+      <div class="col-chat">
+        <div id="chat" class="chat" aria-live="polite"></div>
+        <form id="composer" class="composer" autocomplete="off">
+          <input id="textInput" placeholder='Ask anything. Tip: “/image friendly robot” or “/search Nvidia earnings”.' />
+          <button type="submit" title="Send text message">Send</button>
+          <button id="stopBtn" type="button" class="secondary" title="Interrupt current reply">Stop</button>
+        </form>
+      </div>
+
+      <aside class="col-tools">
+        <div class="tools">
+          <header>
+            <h3>Tool activity</h3>
+            <span class="spacer"></span>
+            <span id="toolsCount" class="count">0</span>
+            <button id="cancelAllToolsBtn" class="btn-subtle" title="Cancel all running tools">Cancel all</button>
+          </header>
+          <div id="toolsPane" class="list"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module">
+    import { RealtimeAgent, RealtimeSession, tool } from 'https://cdn.jsdelivr.net/npm/@openai/agents-realtime@0.0.17/+esm';
+
+    const $ = (s)=>document.querySelector(s);
+    const chatEl=$('#chat'); const statusEl=$('#status'); const connectBtn=$('#connectBtn'); const disconnectBtn=$('#disconnectBtn'); const stopBtn=$('#stopBtn');
+    const textForm=$('#composer'); const textInput=$('#textInput'); const modelSel=$('#model'); const voiceSel=$('#voice'); const imgApiBaseInput=$('#imgApiBase'); const searchApiBaseInput=$('#searchApiBase');
+    const toolsPane=$('#toolsPane'); const toolsCountEl=$('#toolsCount'); const cancelAllToolsBtn=$('#cancelAllToolsBtn');
+
+    const setStatus=(t,cls='')=>{ statusEl.className=`status ${cls}`; statusEl.querySelector('.txt').textContent=t; };
+    const addMsg=(role,text)=>{ const div=document.createElement('div'); div.className=`msg ${role}`; div.textContent=text; chatEl.appendChild(div); chatEl.scrollTop=chatEl.scrollHeight; };
+
+    let lastHistory=[]; const imageFeed=[];
+    const buildImageNode=(url,caption='')=>{ const div=document.createElement('div'); div.className='msg assistant image'; const fig=document.createElement('figure'); const img=document.createElement('img'); img.src=url; img.alt=caption||'Generated image'; const cap=document.createElement('figcaption'); cap.textContent=caption||'Generated image'; fig.appendChild(img); fig.appendChild(cap); div.appendChild(fig); return div; };
+    const addImageToFeed=(url, caption='')=>{ imageFeed.push({ id:crypto.randomUUID?.()||String(Math.random()), url, caption, ts:Date.now() }); renderHistory(lastHistory); };
+    const itemToText=(item)=>{ if(!item) return ''; if(typeof item.content==='string') return item.content; if(Array.isArray(item.content)){ return item.content.map(p=>(p&&(p.text||p.transcript||p.refusal))||'').filter(Boolean).join(' ');} if(item.transcript) return item.transcript; if(item.formatted&&item.formatted.text) return item.formatted.text; return ''; };
+    function renderHistory(history){ lastHistory=history; chatEl.innerHTML=''; for(const item of history){ if(item.type==='message'&&(item.role==='user'||item.role==='assistant')){ const who=item.role==='assistant'?'assistant':'user'; const txt=itemToText(item); if(txt) addMsg(who,(who==='assistant'?'':'You: ')+txt); } } for(const img of imageFeed) chatEl.appendChild(buildImageNode(img.url,img.caption)); chatEl.scrollTop=chatEl.scrollHeight; }
+
+    // === Tool run manager (single source of truth) ===
+    const toolRuns = new Map(); // id -> {id,name,args,el,started,abort}
+    let toolSeq = 0;
+
+    function safeJson(v){ try{ return JSON.stringify(v ?? {}, null, 2); } catch { return String(v ?? ''); } }
+    function summarizeArgs(args){
+      try{
+        if(!args || typeof args!=='object') return '';
+        const entries = Object.entries(args).filter(([k,v])=> v!==undefined && v!==null && String(v)!=='');
+        const first = entries.slice(0,3).map(([k,v])=> `${k}=${JSON.stringify(v).slice(0,60)}`).join(', ');
+        return entries.length ? `(${first}${entries.length>3 ? ', …' : ''})` : '';
+      }catch{ return ''; }
+    }
+
+    function updateToolStatus(){
+      const n = toolRuns.size;
+      if (toolsCountEl) toolsCountEl.textContent = String(n);
+      const base = 'connected';
+      setStatus(n>0 ? `${base} • ${n} tool${n>1?'s':''}` : base, 'ok');
+    }
+
+    function createToolCard(name, args, abortController){
+      const id = `tool-${Date.now()}-${++toolSeq}`;
+      const el = document.createElement('div');
+      el.className = 'tool-run';
+      const now = new Date().toLocaleTimeString();
+      el.innerHTML = `
+        <button class="kill" title="Cancel this tool">✕</button>
+        <div class="row">
+          <span class="dot spinner"></span>
+          <span class="name">${name}</span>
+          <span class="status">running</span>
+        </div>
+        <div class="meta">${now} ${summarizeArgs(args)}</div>
+        <div class="tool-tip"><div class="box"><pre>${safeJson(args)}</pre></div></div>
+      `;
+      toolsPane.appendChild(el);
+      toolRuns.set(id, { id, name, args, el, started: Date.now(), abort: abortController });
+      // Wire cancel for this card
+      const run = toolRuns.get(id);
+      el.querySelector('.kill')?.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        try { run.abort?.abort(); } catch {}
+        finishToolCard(id, 'interrupted');
+      });
+      updateToolStatus();
+      return id;
+    }
+
+    function finishToolCard(id, status='done'){ // 'done' | 'error' | 'interrupted'
+      const run = toolRuns.get(id); if(!run) return;
+      const ok = status === 'done';
+      run.el.classList.toggle('done', ok);
+      run.el.classList.toggle('err', !ok);
+      run.el.querySelector('.status').textContent = status;
+      run.el.querySelector('.dot').classList.remove('spinner');
+      setTimeout(()=>{ try{ run.el.remove(); }catch{}; toolRuns.delete(id); updateToolStatus(); }, 700);
+    }
+
+    function cancelAllTools(){
+      for (const run of toolRuns.values()) { try { run.abort?.abort(); } catch {} }
+      for (const id of [...toolRuns.keys()]) finishToolCard(id, 'interrupted');
+    }
+
+    cancelAllToolsBtn.addEventListener('click', cancelAllTools);
+
+    // ----------- IMAGE TOOL -----------
+    const generateImageTool = tool({
+      name: 'generate_image',
+      description: 'Call the local Image Agent to create an image',
+      parameters: { type:'object', properties:{ input:{type:'string'} }, required:['input'], additionalProperties:false },
+      async execute(args){
+        const ctrl = new AbortController();
+        const runId = createToolCard('generate_image', args, ctrl);
+        addMsg('sys', `Using generate_image ${summarizeArgs(args)}…`);
+        const base=(imgApiBaseInput.value.trim()||'http://localhost:8001').replace(/\/+$/,'');
+        let status = 'done';
+        try{
+          const res = await fetch(`${base}/generate`, {
+            method:'POST',
+            headers:{'Content-Type':'application/json','Accept':'image/png,application/json'},
+            body: JSON.stringify(args),
+            signal: ctrl.signal
+          });
+          if(!res.ok){ const text=await res.text().catch(()=> ''); throw new Error(`Image API error ${res.status}${text?`: ${text}`:''}`); }
+          const ct=(res.headers.get('content-type')||'').toLowerCase();
+          let url=null;
+          if(ct.startsWith('image/')){ const blob=await res.blob(); url=URL.createObjectURL(blob); }
+          else if(ct.includes('application/json')){
+            const data=await res.json();
+            if(data.file_url){ const path=data.file_url.startsWith('/')?data.file_url:`/${data.file_url}`; url=`${base}${path}`; }
+            else if(data.base64){ url=`data:image/png;base64,${data.base64}`; }
+            else { throw new Error('JSON response missing file_url or base64'); }
+          } else { throw new Error(`Unexpected content-type: ${ct||'(none)'}`); }
+          addImageToFeed(url, args.input || '');
+          return `Created an image for: "${args.input || ''}".`;
+        }catch(err){
+          if (err?.name === 'AbortError'){ status = 'interrupted'; addMsg('sys','Image generation interrupted.'); }
+          else { status = 'error'; console.error(err); addMsg('sys', `Image generation failed: ${err?.message||String(err)}`); }
+          return 'I could not generate the image.';
+        } finally {
+          finishToolCard(runId, status);
+        }
+      }
+    });
+
+    // ----------- WEB SEARCH TOOL -----------
+    const webSearchTool = tool({
+      name: 'web_search',
+      description: 'Search the live web for up-to-date information and return a concise answer with sources.',
+      parameters: {
+        type:'object',
+        properties:{
+          query:{type:'string', description:'What to search for'},
+          recency_days:{type:'number', minimum:1, maximum:3650},
+          max_results:{type:'number', minimum:1, maximum:20},
+          include_domains:{type:'array', items:{type:'string'}},
+          exclude_domains:{type:'array', items:{type:'string'}}
+        },
+        required:['query'],
+        additionalProperties:false
+      },
+      async execute(args){
+        const ctrl = new AbortController();
+        const runId = createToolCard('web_search', args, ctrl);
+        addMsg('sys', `Using web_search ${summarizeArgs(args)}…`);
+        const base=(searchApiBaseInput.value.trim()||'http://localhost:8002').replace(/\/+$/,'');
+        let status = 'done';
+        try{
+          const res = await fetch(`${base}/search`, {
+            method:'POST',
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body: JSON.stringify(args),
+            signal: ctrl.signal
+          });
+          if(!res.ok){ const text=await res.text().catch(()=> ''); throw new Error(`Search API error ${res.status}${text?`: ${text}`:''}`); }
+          const data = await res.json();
+          const answer = data.answer || 'No answer';
+          const sources = Array.isArray(data.sources)&&data.sources.length
+            ? "\n\nSources:\n" + data.sources.map((s,i)=>`[${i+1}] ${s.title||s.url||''} — ${s.url||''}`).join("\n")
+            : "";
+          return answer + sources;
+        }catch(err){
+          if (err?.name === 'AbortError'){ status = 'interrupted'; addMsg('sys','Search interrupted.'); }
+          else { status = 'error'; console.error(err); addMsg('sys', `Web search failed: ${err?.message||String(err)}`); }
+          return 'I could not search the web.';
+        } finally {
+          finishToolCard(runId, status);
+        }
+      }
+    });
+
+    const agent = new RealtimeAgent({
+      name:'Assistant',
+      instructions:[
+        'You are a helpful, concise voice assistant.',
+        'Respond in English only.',
+        'When the user asks for current events, verification, or up-to-date facts, call the tool "web_search" with a focused query.',
+        'When the user asks to create/make/draw/generate an image, call the tool "generate_image" with a concise description.',
+        'Keep answers short with clear bullet points; include brief sources when available.'
+      ].join(' '),
+      tools:[generateImageTool, webSearchTool]
+    });
+
+    let session=null;
+
+    function wireSessionEvents(s){
+      s.on('history_updated',(h)=>renderHistory(h));
+      s.on('audio_start',()=>setStatus('speaking…','ok'));
+      s.on('audio_stopped',()=>updateToolStatus()); // restore connected • n tools
+      // NOTE: We intentionally DO NOT listen to agent_tool_start/agent_tool_end
+      // to avoid duplicate tool cards. The UI is the single source of truth via execute() above.
+      s.on('error',(e)=>{ console.error(e); setStatus(e?.message||'error','err'); addMsg('sys', `Error: ${e?.message||String(e)}`);});
+    }
+
+    connectBtn.addEventListener('click', async ()=>{
+      if(session) return; setStatus('minting key…');
+      try{
+        const r=await fetch('/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:modelSel.value, voice:voiceSel.value})});
+        if(!r.ok) throw new Error(await r.text()); const {client_secret}=await r.json(); if(!client_secret) throw new Error('No ephemeral key returned');
+        session = new RealtimeSession(agent,{ model:modelSel.value, config:{ inputAudioTranscription:{model:'gpt-4o-mini-transcribe', language:'en'}, turnDetection:{type:'semantic_vad', eagerness:'medium', createResponse:true, interruptResponse:true}}, providerData:{voice:voiceSel.value} });
+        wireSessionEvents(session); setStatus('connecting…'); await session.connect({ apiKey: client_secret });
+        addMsg('sys','Connected. Speak or type your request.'); updateToolStatus();
+        connectBtn.disabled=true; disconnectBtn.disabled=false; modelSel.disabled=true; voiceSel.disabled=true;
+      }catch(e){ console.error(e); addMsg('sys','Failed to connect.'); setStatus('failed','err'); session=null; }
+    });
+
+    disconnectBtn.addEventListener('click',()=>{ 
+      if (session){ try{ session.disconnect(); }catch{} session=null; }
+      addMsg('sys','Disconnected.');
+      setStatus('idle');
+      connectBtn.disabled=false; disconnectBtn.disabled=true; modelSel.disabled=false; voiceSel.disabled=false;
+      cancelAllTools(); // also clears the pane
+    });
+
+    // Stop only interrupts the model's current response; tools keep running unless canceled explicitly
+    stopBtn.addEventListener('click',()=>{ if(session) session.interrupt(); });
+
+    // Let slash commands run tools concurrently (no await)
+    textForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const text=textInput.value.trim(); if(!text||!session) return;
+
+      if(text.toLowerCase().startsWith('/image ')){
+        const prompt=text.slice('/image '.length).trim();
+        addMsg('user',`You: (image) ${prompt}`);
+        // fire-and-forget; result will be displayed when the tool resolves
+        generateImageTool.execute({input:prompt})
+          .then((res)=>{ if(res) addMsg('assistant', res); })
+          .catch(()=>{}); // errors already handled in execute()
+      } 
+      else if(text.toLowerCase().startsWith('/search ')){
+        const q=text.slice('/search '.length).trim();
+        addMsg('user',`You: (search) ${q}`);
+        webSearchTool.execute({query:q})
+          .then((res)=>{ if(res) addMsg('assistant', res); })
+          .catch(()=>{});
+      } 
+      else {
+        // Normal chat goes through the agent; tool usage decided by the model (usually sequential)
+        session.sendMessage(text);
+      }
+      textInput.value='';
+    });
+
+    addMsg('sys','Click “🎤 Connect mic” to start. Then try running /image and /search back-to-back to see concurrent tools.');
+  </script>
+</body>
+</html>

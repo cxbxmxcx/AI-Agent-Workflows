@@ -1,0 +1,22 @@
+Quarterly report, Q3
+
+Summary
+Revenue grew 12% over the previous quarter, driven by the new team plan.
+Churn fell from 4.1% to 3.6%. Support response time rose from 5 to 7 hours
+because ticket volume grew faster than the support team.
+
+Highlights
+- The team plan reached 1,200 paying accounts in its first full quarter.
+- The mobile app rating improved from 4.1 to 4.4 after the offline mode release.
+- Infrastructure costs stayed flat despite 18% more usage.
+
+Concerns
+- Support is understaffed for the current ticket volume.
+- Two enterprise customers asked for single sign-on before renewing in Q1.
+- The billing system migration is three weeks behind schedule.
+
+Next quarter
+The leadership team agreed to hire two support engineers, to start single
+sign-on work in October so it ships before the Q1 renewals, and to bring the
+billing migration back on schedule by moving one engineer from the reporting
+project. Finance will review the pricing of the team plan in November.

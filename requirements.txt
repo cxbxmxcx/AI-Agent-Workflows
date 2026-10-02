@@ -1,31 +1,34 @@
-openai-agents  # Provides tools for building and running OpenAI-based agents
-pydantic  # Data validation and settings management using Python type annotations
-python-dotenv  # Loads environment variables from a .env file
-autopep8  # Automatically formats Python code to conform to PEP 8
-pylint  # Linter for Python code to enforce coding standards
-flake8  # Combines linting tools for style guide enforcement
-isort  # Automatically sorts Python imports
-mypy  # Static type checker for Python
-mcp[cli]
-uv # for project management and running application servers for Claude etc.
-openai-agents[viz]  # Visualization tools for OpenAI agents
+# Exact versions the examples are tested with (Python 3.11 to 3.14). Keep mcp below 2.0: version 2
+# removed FastMCP, which the chapter 3 and 4 servers are built on.
+openai-agents[viz]==0.23.1  # Tools for building and running OpenAI-based agents; [viz] draws agent graphs
+openai==3.24.0  # OpenAI API client, also imported directly by a few examples
+pydantic==2.13.5  # Data validation and settings management using Python type annotations
+python-dotenv[cli]==1.2.4  # Loads environment variables from a .env file; [cli] adds "python -m dotenv run"
+autopep8==2.3.2  # Automatically formats Python code to conform to PEP 8
+pylint==4.1.1  # Linter for Python code to enforce coding standards
+flake8==7.4.1  # Combines linting tools for style guide enforcement
+isort==9.0.2  # Automatically sorts Python imports
+mypy==2.4.0  # Static type checker for Python
+mcp[cli]==1.30.0  # Model Context Protocol SDK: FastMCP servers and the mcp command
+uv==0.12.22  # for project management and running application servers for Claude etc. (provides uvx)
+typing_extensions==4.16.0  # Typing helpers imported by the chapter 2 examples
 
-plotly  # For creating interactive visualizations
-numpy  # Fundamental package for scientific computing with Python
-chromadb  # Vector database for storing and querying embeddings
-tiktoken
+plotly==7.1.0  # For creating interactive visualizations
+numpy==2.4.6  # Fundamental package for scientific computing with Python
+chromadb==1.5.9  # Vector database for storing and querying embeddings
+tiktoken==0.14.0  # Counts tokens when the chapter 6 examples chunk documents
+scikit-learn==1.9.1  # TF-IDF, cosine similarity and PCA in chapter 6 (imported as sklearn)
 
-# A2A
-google-adk[a2a]
-litellm
-
-matplotlib  # For plotting and visualizing data
+matplotlib==3.11.2  # For plotting and visualizing data
 
 # For tracing, monitoring, and evaluation
-arize-phoenix
-openinference-instrumentation-openai-agents
-openinference-instrumentation-openai
+arize-phoenix-otel==0.17.2  # The tracing client the examples import (phoenix.otel)
+arize-phoenix==20.6.0; python_version >= "3.12"  # The Phoenix server (phoenix serve); it fails to import on Python 3.11
+openinference-instrumentation==0.1.70
+openinference-instrumentation-openai-agents==2.5.2
+openinference-instrumentation-openai==0.1.63
 
 # For web applications and APIs
-fastapi 
-uvicorn[standard]
+fastapi==0.142.2
+uvicorn[standard]==0.54.0
+requests==2.34.2
