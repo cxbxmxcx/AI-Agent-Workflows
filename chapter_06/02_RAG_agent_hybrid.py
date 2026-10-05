@@ -63,7 +63,7 @@ set_trace_processors([ConsoleTracingProcessor()])
 # ------------------------------------------------------------------
 # 1. Load + chunk the script
 # ------------------------------------------------------------------
-script_text = Path("chapter_06/sample_documents/back_to_the_future.txt").read_text(
+script_text = (Path(__file__).parent / "sample_documents" / "back_to_the_future.txt").read_text(
     encoding="utf-8"
 )
 
@@ -89,7 +89,7 @@ docs = simple_chunk(script_text, max_tokens=200)
 #    local embedding function, not an external embeddings API)
 # ------------------------------------------------------------------
 client = chromadb.PersistentClient(
-    path="./chapter_06/chroma_script_store"  # on-disk so we reuse later
+    path=str(Path(__file__).parent / "chroma_script_store")  # on-disk so we reuse later
 )
 collection_name = "bttf_script"
 

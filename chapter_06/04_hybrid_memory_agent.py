@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -73,7 +74,7 @@ async def main():
         name="chroma",
         params={
             "command": "uvx",
-            "args": ["chroma-mcp", "--data-dir", "chapter_06/chroma_script_store"],
+            "args": ["chroma-mcp", "--client-type", "persistent", "--data-dir", str(Path(__file__).parent / "chroma_script_store")],
         },
         client_session_timeout_seconds=90,
     )
